@@ -61,7 +61,11 @@ public class Main {
 
         // send results to processor to count and display results using the UI file
         TreeMap<String, Integer> result = processor.countCasesByProperty(covidData, propertyValueMap);
-        ui.displayResults(result);
+
+        // call the display menu to prompt user for actions
+        ui.displayMainMenu();
+        ui.displayActions();
+
 
         // closing logger
         logger.close();
