@@ -38,23 +38,23 @@ public class PresentationUI {
                         break;
 
                     case 2:
-                        Processor.calculateTotalPopulation();
+                        Processor.calculateTotalPopulation(population, zipCode);
                         break;
 
                     case 3:
-                        Processor.calculateVaccinationsPerCapita();
+                        Processor.calculateVaccinationsPerCapita(partialVaccination, fullVaccination, zipCode, timeStamp);
                         break;
 
                     case 4:
-                        Processor.calculateAverageMarketValue();
+                        Processor.calculateAverageMarketValue(marketValue, zipCode);
                         break;
 
                     case 5:
-                        Processor.calculateAverageLivableArea();
+                        Processor.calculateAverageLivableArea(livableArea, zipCode);
                         break;
 
                     case 6:
-                        Processor.calculateMarketValuePerCapita();
+                        Processor.calculateMarketValuePerCapita(population, marketValue, zipCode);
                         break;
 
                     case 7:

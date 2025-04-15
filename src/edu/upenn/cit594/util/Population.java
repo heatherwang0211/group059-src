@@ -1,4 +1,4 @@
-package upenn.edu.cit594.util;
+package edu.upenn.cit594.util;
 
 public class Population {
     private String zipCode;

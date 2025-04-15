@@ -8,11 +8,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CovidCsvReader implmenets COVIDDataReader {
+public abstract class CovidCsvReader implements COVIDDataReader {
+    // HW: updated with override and abstract class
+    @Override
+    public List<CovidData> CovidCsvReader(String fileName) {
     List<CovidData> covidDataRaw = new ArrayList<>();
 
     try (BufferedReader buffReader = new BufferedReader(new FileReader(fileName)))
-
     {
         String header = buffReader.readLine(); // get the header
         if (header == null) { // need this check since the interface doesnt do any of this checking
@@ -65,16 +67,16 @@ public class CovidCsvReader implmenets COVIDDataReader {
     } catch (IOException e) {
         e.printStackTrace();
     }
-return covidDataRaw;
+        return covidDataRaw;
         }
 
         private double process(String cell) {
-    try {
-        if (cell == null || cell.isEmpty()) {
-            return 0.0;
-        }
-        return Double.parseDouble(cell);
-    } catch (NumberFormatException n) {
-        return 0.0;
-    }
-    }
+            try {
+                if (cell == null || cell.isEmpty()) {
+                    return 0.0;
+                }
+                return Double.parseDouble(cell);
+            } catch (NumberFormatException n) {
+                return 0.0;
+            }
+        }}

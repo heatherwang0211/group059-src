@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.upenn.cit594.util.Population;
 import edu.upenn.cit594.util.Properties;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

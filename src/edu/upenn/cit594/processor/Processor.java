@@ -1,6 +1,12 @@
 package edu.upenn.cit594.processor;
 
 import edu.upenn.cit594.logging.Logger;
+import edu.upenn.cit594.util.CovidData;
+import edu.upenn.cit594.util.Properties;
+import edu.upenn.cit594.util.Population;
+
+import java.util.List;
+
 
 public class Processor {
     private Logger logger;
@@ -48,17 +54,17 @@ public class Processor {
      * I think we need to check this one. We may not need Timestamp at all
      */
     public static int calculateVaccinationsPerCapita(int partialVaccination, int fullVaccination, String zipCode, String timeStamp) {
-int population = fetchPopulationsUsingZipCode);
-if (population == 0) {
-    return 0;
-}
-double totalVaccines = partialVaccination + fullVaccination;
+        int population = fetchPopulationsUsingZipCode(zipCode);
+        if (population == 0) {
+            return 0;
+        }
+        double totalVaccines = partialVaccination + fullVaccination;
 
-double finalValue = totalVaccines / population;
+        double finalValue = totalVaccines / population;
 
-return (int) finalValue;
+        return (int) finalValue;
 
-    }
+            }
 
     /**
      *
@@ -98,10 +104,16 @@ return (int) finalValue;
      * @return
      */
     public static int calculateCustomFeature() {
+
         return 0;
     }
 
-    public static int fetchPopulationsUsingZipCode( String zipCode) {
+    /**
+     *
+     * @param zipCode
+     * @return
+     */
+    public static int fetchPopulationsUsingZipCode(String zipCode) {
         if (populationList == null) {
             return 0;
         }
