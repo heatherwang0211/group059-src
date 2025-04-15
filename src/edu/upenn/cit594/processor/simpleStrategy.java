@@ -5,6 +5,6 @@ package edu.upenn.cit594.processor;
  */
 public interface simpleStrategy {
 
-    double crunchNumbers(String zipCode);
+    double crunchNumbers(String zipCode);//
 
 }

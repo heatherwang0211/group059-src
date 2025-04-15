@@ -9,7 +9,7 @@ public class Processor {
     private List<CovidData> covidData;
     private List<Population> populationList;
     private List<Properties> propertiesList;
-
+// added comment
 
     /**
      * Constuctor for the processor that needs the logger + all the data-lists.
