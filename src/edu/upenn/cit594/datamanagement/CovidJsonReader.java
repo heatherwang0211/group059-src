@@ -44,8 +44,8 @@ public class CovidJsonReader implements CovidDataReader{
                     continue; // skip if the zipcode is poorly formatted
                 }
 
-                //////String timeStamp = (String) instanceOfJson.get("");
-                /// //// NEED TO FIGURE OUT WHAT TO CHECK FOR WITHIN THE JSON BODY
+                // ZH need to confirm that this works. DOUBLE CHECK
+                String timeStamp = (String) instanceOfJson.get("etl_timestamp");
 
                 if (timeStamp == null) {
                 timeStamp = "";
