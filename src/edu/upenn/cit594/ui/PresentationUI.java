@@ -93,7 +93,7 @@ public class PresentationUI {
                 break;
 
             case "7":
-                Processor.calculateCustomFeature();
+                Processor.calculateVaccinationPropertyValueCorrelation();
                 break;
 
             // case where user inputs something invalid
