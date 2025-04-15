@@ -22,61 +22,95 @@ public class PresentationUI {
             displayMainMenu();
 
             try {
-                int choice = scanner.nextInt();
-                System.out.flush();
-
-                // switch between all 8 cases based on input
-                // do the calculations using the methods from processor
-                switch(choice) {
-                    case 0:
-                        System.out.println("Exited program. Goodbye!");
-                        running = false;
-                        break;
-
-                    case 1:
-                        displayActions();
-                        break;
-
-                    case 2:
-                        Processor.calculateTotalPopulation();
-                        break;
-
-                    case 3:
-                        Processor.calculateVaccinationsPerCapita();
-                        break;
-
-                    case 4:
-                        Processor.calculateAverageMarketValue();
-                        break;
-
-                    case 5:
-                        Processor.calculateAverageLivableArea();
-                        break;
-
-                    case 6:
-                        Processor.calculateMarketValuePerCapita();
-                        break;
-
-                    case 7:
-                        Processor.calculateCustomFeature();
-                        break;
-
-                    // case where user inputs something invalid
-                    default:
-                        System.out.println("Invalid choice. Please try again with a valid integer between 0 and 7.");
-                        System.out.flush();
-                        break;
+                // get the input and check whether it is valid
+                String input = scanner.nextLine().trim();
+                if (input.equals("0")) {
+                    System.out.println("Exited program. Goodbye!");
+                    running = false;
+                } else if (input.equals("1")) {
+                    handleActionsMenu();
+                }
+                // if not valid option, then prompt to re-input
+                else {
+                    System.out.println("Invalid input. Please enter either 0 or 1.");
                 }
             }
-            // catch exceptions and display
+            // handling of other exceptions
             catch (Exception e) {
-                System.out.println("Invalid choice. Please try again with a valid integer between 0 and 7.");
-                System.out.flush();
-                scanner.nextLine();
+                System.out.println("An error occurred. Please try again.");
             }
         }
         scanner.close();
     }
+
+    /**
+     * this method handles the actions main menu if user decides to proceed
+     */
+    private void handleActionsMenu() {
+        boolean isValidAction = true;
+        System.out.flush();
+
+        // go to display if valid
+        while (isValidAction) {
+            displayActions();
+        }
+
+        // try to get the input and clear
+        try {
+            String input = scanner.nextLine().trim();
+
+        // switch between all 8 cases based on input
+        // do the calculations using the methods from processor
+        switch(input) {
+            case "0":
+                System.out.println("Exited program. Goodbye!");
+                // not valid then exit
+                isValidAction = false;
+                break;
+
+            case "1":
+                displayActions();
+                break;
+
+            case "2":
+                Processor.calculateTotalPopulation(population, zipCode);
+                break;
+
+            case "3":
+                Processor.calculateVaccinationsPerCapita(partialVaccination, fullVaccination, zipCode, timeStamp);
+                break;
+
+            case "4":
+                Processor.calculateAverageMarketValue(marketValue, zipCode);
+                break;
+
+            case "5":
+                Processor.calculateAverageLivableArea(livableArea, zipCode);
+                break;
+
+            case "6":
+                Processor.calculateMarketValuePerCapita(population, marketValue, zipCode);
+                break;
+
+            case "7":
+                Processor.calculateVaccinationPropertyValueCorrelation();
+                break;
+
+            // case where user inputs something invalid
+            default:
+                System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
+                System.out.flush();
+                break;
+        }
+            }
+            // catch exceptions and display
+            catch (Exception e) {
+                System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
+                System.out.flush();
+                scanner.nextLine();
+            }
+        }
+
 
     /**
      * prints out the main menu for users to choose to continue to explore or exit

@@ -11,9 +11,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CovidJsonReader implements CovidDataReader{
-
-    public List<CovidData> readData(String filename) {
+public abstract class CovidJsonReader implements COVIDDataReader{
+    //HW: updated w override and abstract class
+    @Override
+    public List<CovidData> readData(String fileName) {
         List<CovidData> covidDataRaw = new ArrayList<>();
         JSONParser parser = new JSONParser();
 
@@ -25,9 +26,9 @@ public class CovidJsonReader implements CovidDataReader{
                 JSONObject instanceOfJson = (JsonObject) row;
                 String zipCodeCell = (String) instanceOfJson.get("zip_code");
                 if (zipCodeCell = null) { // make sure there is a valid zipCode
-                continue;
+                    continue;
                 }
-                String zipCode = zipCodeCell.trim()
+                String zipCode = zipCodeCell.trim();
 
                 // check the zipcode format and size and make sure its valid before proceeding
                 if (zipCode.length() != 5) {
@@ -48,7 +49,7 @@ public class CovidJsonReader implements CovidDataReader{
                 String timeStamp = (String) instanceOfJson.get("etl_timestamp");
 
                 if (timeStamp == null) {
-                timeStamp = "";
+                    timeStamp = "";
                 } else {
                     timeStamp = timeStamp.trim();
                 }
@@ -64,12 +65,14 @@ public class CovidJsonReader implements CovidDataReader{
                 CovidData covidInstance = new CovidData(
                         zipCode, negativeCasesCount, positiveCasesCount, deathCount, hospitalizationCount, partialVaccinatedCount, fullyVaccinatedCount, boosterShotCount, timeStamp);
                 covidDataRaw.add(covidInstance);
-            } catch (IOException | ParseException e) {
+            }
+        }
+        catch (IOException | ParseException e) {
                 System.err.println("There was an issue either parsing the file or with the I/O");
             }
 
             return covidDataRaw;
-            }
+
 
 
         }
