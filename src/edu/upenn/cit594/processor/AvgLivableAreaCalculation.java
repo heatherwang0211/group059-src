@@ -3,7 +3,7 @@ package edu.upenn.cit594.processor;
 import edu.upenn.cit594.util.Properties;
 import java.util.List; //
 
-public class AvgLiveableAreaCalculation implements ComputationStrategy {
+public class AvgLiveableAreaCalculation implements strategyAverageCalculator{
 
     private List<Properties> propertiesList;
 
@@ -16,7 +16,7 @@ public class AvgLiveableAreaCalculation implements ComputationStrategy {
     }
 
     @Override
-    public int crunchNumbers(String zipCode) {
+    public double crunchNumbers(int zipCode) {
         if (propertiesList == null) {
             return 0;
         }

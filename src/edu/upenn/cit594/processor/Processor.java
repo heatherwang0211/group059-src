@@ -28,7 +28,7 @@ public class Processor {
      * @param zipCode
      * @return
      */
-    public static int calculateTotalPopulation(int population, String zipCode) {
+    public static int calculateTotalPopulation(int population, int zipCode) {
         int totalPopulation = 0;
         for (Population instance : populationList) {
             double newPopulationToAdd = instance.getPopulation(); // Need to check the getPopulations field.
@@ -47,7 +47,7 @@ public class Processor {
      *
      * I think we need to check this one. We may not need Timestamp at all
      */
-    public static int calculateVaccinationsPerCapita(int partialVaccination, int fullVaccination, String zipCode, String timeStamp) {
+    public static int calculateVaccinationsPerCapita(int partialVaccination, int fullVaccination, int zipCode, String timeStamp) {
 int population = fetchPopulationsUsingZipCode);
 if (population == 0) {
     return 0;
@@ -66,7 +66,7 @@ return (int) finalValue;
      * @param zipCode
      * @return
      */
-    public static int calculateAverageMarketValue(int marketValue, String zipCode) {
+    public static int calculateAverageMarketValue(int marketValue, int zipCode) {
         // use the two inputs and count number of entries for properties to use as average
         return 0;
     }
@@ -77,7 +77,7 @@ return (int) finalValue;
      * @param zipCode
      * @return
      */
-    public static int calculateAverageLivableArea(int livableArea, String zipCode) {
+    public static int calculateAverageLivableArea(int livableArea, int zipCode) {
         // use the two inputs and count number of entries for properties to use as average
         return 0;
     }
@@ -89,19 +89,19 @@ return (int) finalValue;
      * @param zipCode
      * @return
      */
-    public static int calculateMarketValuePerCapita(int population, int marketValue, String zipCode) {
+    public static int calculateMarketValuePerCapita(int population, int marketValue, int zipCode) {
         return 0;
     }
 
     /**
-     *
+     * this method calculates the death rate per population in any zipcode
      * @return
      */
-    public static int calculateCustomFeature() {
+    public static int calculateDeathRatePerCapita(int population, int deathCount, int zipCode) {
         return 0;
     }
 
-    public static int fetchPopulationsUsingZipCode( String zipCode) {
+    public static int fetchPopulationsUsingZipCode(int zipCode) {
         if (populationList == null) {
             return 0;
         }

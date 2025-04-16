@@ -3,7 +3,7 @@ package edu.upenn.cit594.processor;
 import edu.upenn.cit594.util.Properties;
 import java.util.List; //
 
-public class AvgMarketValueCalculation implements ComputationStrategy {
+public class AvgMarketValueCalculation implements strategyAverageCalculator {
 
     private List<Properties> propertiesList;
 
@@ -13,6 +13,11 @@ public class AvgMarketValueCalculation implements ComputationStrategy {
      */
     public AvgMarketValueCalculation(List<Properties> propertiesList) {
         this.propertiesList = propertiesList;
+    }
+
+    @Override
+    public double crunchNumbers(int zipCode) {
+        return 0;
     }
 
     @Override

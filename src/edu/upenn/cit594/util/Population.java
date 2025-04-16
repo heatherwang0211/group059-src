@@ -1,17 +1,17 @@
 package edu.upenn.cit594.util;
 
 public class Population {
-    private String zipCode;
+    private int zipCode;
     private double population;
 
-    public Population(String zipCode, double population) {
+    public Population(int zipCode, double population) {
         this.zipCode = zipCode;
         this.population = population;
     }
 
     // getters and setters
 
-    public String getZipCode() {
+    public int getZipCode() {
         return zipCode;
     }
 

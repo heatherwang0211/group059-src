@@ -5,7 +5,7 @@ package edu.upenn.cit594.util;
  */
 public class CovidData {
     // constructor
-    private String zipCode;
+    private int zipCode;
     private double negativeCases;
     private double positiveCases;
     private double deathsCount;
@@ -17,7 +17,7 @@ public class CovidData {
 
 
     // getters and setters
-    public CovidData(String zipCode, double negativeCases, double positiveCases, double deathsCount, double hospitalizationsCount,
+    public CovidData(int zipCode, double negativeCases, double positiveCases, double deathsCount, double hospitalizationsCount,
                      double partialVaxCount, double fullyVaxCount, double boosterCount, String timeStamp) {
 
         this.zipCode = zipCode;
@@ -32,7 +32,7 @@ public class CovidData {
 
     }
 
-    public String zipCode() {
+    public int zipCode() {
         return zipCode;
     }
 
