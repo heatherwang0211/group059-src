@@ -1,6 +1,11 @@
 package edu.upenn.cit594.processor;
 
 import edu.upenn.cit594.logging.Logger;
+import edu.upenn.cit594.util.CovidData;
+import edu.upenn.cit594.util.Population;
+import edu.upenn.cit594.util.Properties;
+
+import java.util.List;
 
 public class Processor {
     private Logger logger;
@@ -46,6 +51,7 @@ public class Processor {
      * @return
      *
      * I think we need to check this one. We may not need Timestamp at all
+     * HW: In the requirement it asks the user to input a YYYYMMDD to search for the date so we need it
      */
     public static int calculateVaccinationsPerCapita(int partialVaccination, int fullVaccination, int zipCode, String timeStamp) {
 int population = fetchPopulationsUsingZipCode);
@@ -94,10 +100,12 @@ return (int) finalValue;
     }
 
     /**
-     * this method calculates the death rate per population in any zipcode
-     * @return
+     * this method calculates the ratio of death rate to avg market value of properties in a ZIP code
+     * death rate = death from covid data / population data
+     * divided by average market value = total market value in zip code/ number of houses
+     * @return death to income ratio
      */
-    public static int calculateDeathRatePerCapita(int population, int deathCount, int zipCode) {
+    public static int calculateDeathToPropertyValueRatio(int population, int deathCount, int zipCode, int propertyValue) {
         return 0;
     }
 

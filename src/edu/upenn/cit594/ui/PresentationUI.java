@@ -74,21 +74,29 @@ public class PresentationUI {
 
             case "2":
                 Processor.calculateTotalPopulation(population, zipCode);
+                // it should just display total population for ALL the zip codes together
                 break;
 
             case "3":
+                // prompt user to input partial or full, then input a YYYY MM DD date
                 Processor.calculateVaccinationsPerCapita(partialVaccination, fullVaccination, zipCode, timeStamp);
                 break;
 
             case "4":
+                // prompt user to enter valid 5 digit zip code truncated to an integer
                 Processor.calculateAverageMarketValue(marketValue, zipCode);
                 break;
 
             case "5":
+                //prompt user to enter 5 digit zip code
+                //avg total livable area for properties in that zip code truncated to an int
                 Processor.calculateAverageLivableArea(livableArea, zipCode);
                 break;
 
             case "6":
+                //prompt for zip code
+                // total market value in zip divided by population for that zip code
+                // truncated to an int
                 Processor.calculateMarketValuePerCapita(population, marketValue, zipCode);
                 break;
 
