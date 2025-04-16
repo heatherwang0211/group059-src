@@ -12,7 +12,9 @@ public class Processor {
 
     //need to add the lists to store and manipulate this information later
     private List<CovidData> covidData;
-    private List<Population> populationList;
+    //HW: hesitating about whether this should be static, as I was getting warnings on fetchPopulationsUsingZipCode
+    // method for using instance vs. static
+    private static List<Population> populationList;
     private List<Properties> propertiesList;
 // added comment
 
@@ -43,26 +45,28 @@ public class Processor {
     }
 
     /**
-     *
-     * @param partialVaccination
-     * @param fullVaccination
+     * this method calculates the vaccination rate per capita and the vaccination input can either be partial or full
+     * vaccination data, which is inputted by the user
+     * @param vaccination
      * @param zipCode
      * @param timeStamp
      * @return
      *
      * I think we need to check this one. We may not need Timestamp at all
      * HW: In the requirement it asks the user to input a YYYYMMDD to search for the date so we need it
+     * HW: i removed partial and full to just have 1 vaccination input, bc it is a choice made by the user
      */
-    public static int calculateVaccinationsPerCapita(int partialVaccination, int fullVaccination, int zipCode, String timeStamp) {
-int population = fetchPopulationsUsingZipCode);
-if (population == 0) {
-    return 0;
-}
-double totalVaccines = partialVaccination + fullVaccination;
+    public static int calculateVaccinationsPerCapita(int vaccination, int zipCode, String timeStamp) {
+    int population = fetchPopulationsUsingZipCode(zipCode);
+    if (population == 0) {
+        return 0;
+    }
+    double totalVaccines = vaccination;
+    // HW: we need something else here that uses timeStamp to look for the vax rate on that specific date
 
-double finalValue = totalVaccines / population;
+    double finalValue = totalVaccines / population;
 
-return (int) finalValue;
+    return (int) finalValue;
 
     }
 
@@ -74,6 +78,7 @@ return (int) finalValue;
      */
     public static int calculateAverageMarketValue(int marketValue, int zipCode) {
         // use the two inputs and count number of entries for properties to use as average
+
         return 0;
     }
 
@@ -109,13 +114,16 @@ return (int) finalValue;
         return 0;
     }
 
+    //HW: I am not too sure if we should use static or instances here
+    // we are processing different data one by one which feels like instance
+    // but that also feels like creating a lot of inefficiencies
     public static int fetchPopulationsUsingZipCode(int zipCode) {
         if (populationList == null) {
             return 0;
         }
 
         for (Population person : populationList) {
-            if (person.getZipCode().equals(zipCode)) {
+            if (person.getZipCode() == zipCode) {
                 return person.getPopulation();
             }
         }

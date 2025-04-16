@@ -4,7 +4,7 @@ import edu.upenn.cit594.processor.Processor;
 import java.util.*;
 
 public class PresentationUI {
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
 
     public PresentationUI() {
         scanner = new Scanner(System.in);
@@ -59,65 +59,90 @@ public class PresentationUI {
         try {
             String input = scanner.nextLine().trim();
 
-        // switch between all 8 cases based on input
-        // do the calculations using the methods from processor
-        switch(input) {
-            case "0":
-                System.out.println("Exited program. Goodbye!");
-                // not valid then exit
-                isValidAction = false;
-                break;
+            // switch between all 8 cases based on input
+            // do the calculations using the methods from processor
+            switch (input) {
+                case "0":
+                    System.out.println("Exited program. Goodbye!");
+                    // not valid then exit
+                    isValidAction = false;
+                    break;
 
-            case "1":
-                displayActions();
-                break;
+                case "1":
+                    displayActions();
+                    break;
 
-            case "2":
-                Processor.calculateTotalPopulation(population, zipCode);
-                // it should just display total population for ALL the zip codes together
-                break;
+                case "2":
+                    // it should just display total population for ALL the zip codes together
+                    Processor.calculateTotalPopulation(population, zipCode);
+                    break;
 
-            case "3":
-                // prompt user to input partial or full, then input a YYYY MM DD date
-                Processor.calculateVaccinationsPerCapita(partialVaccination, fullVaccination, zipCode, timeStamp);
-                break;
+                case "3":
+                    //prompt user to input "partial" or "full", then input a YYYY-MM-DD date
+                    System.out.println("Please enter vaccination type ('partial' or 'full'):");
+                    System.out.flush();
+                    String vaccinationType = scanner.nextLine().trim().toLowerCase();
 
-            case "4":
-                // prompt user to enter valid 5 digit zip code truncated to an integer
-                Processor.calculateAverageMarketValue(marketValue, zipCode);
-                break;
+                    // validate vaccination type input
+                    while (!vaccinationType.equals("partial") && !vaccinationType.equals("full")) {
+                        System.out.println("Invalid input. Please enter exactly either 'partial' or 'full':");
+                        System.out.flush();
+                        vaccinationType = scanner.nextLine().trim().toLowerCase();
+                    }
+                    System.out.println("Thank you. You have requested for: " + vaccinationType + " data.");
+                    System.out.println("Please enter date in format YYYY-MM-DD:");
+                    System.out.flush();
+                    String dateInput = scanner.nextLine().trim();
 
-            case "5":
-                //prompt user to enter 5 digit zip code
-                //avg total livable area for properties in that zip code truncated to an int
-                Processor.calculateAverageLivableArea(livableArea, zipCode);
-                break;
+                    // validate date format
+                    while (!isValidDateFormat(dateInput)) {
+                        System.out.println("Invalid date format. Please enter date in format YYYY-MM-DD:");
+                        System.out.flush();
+                        dateInput = scanner.nextLine().trim();
+                    }
 
-            case "6":
-                //prompt for zip code
-                // total market value in zip divided by population for that zip code
-                // truncated to an int
-                Processor.calculateMarketValuePerCapita(population, marketValue, zipCode);
-                break;
+                    Processor.calculateVaccinationsPerCapita(vaccination, zipCode, timeStamp);
+                    break;
 
-            case "7":
-                Processor.calculateVaccinationPropertyValueCorrelation();
-                break;
+                case "4":
+                    //prompt user to enter 5 digit zip code
+                    int zipCodeAvgMarketVal = promptForZipCode();
+                    // result is truncated to an int, call processor method
+                    int averageMarketValue = (int) Processor.calculateAverageMarketValue(marketValue, zipCodeAvgMarketVal);
+                    break;
 
-            // case where user inputs something invalid
-            default:
-                System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
-                System.out.flush();
-                break;
-        }
+                case "5":
+                    //prompt user to enter 5 digit zip code
+                    int zipCodeLivableArea = promptForZipCode();
+                    // result is truncated to an int, call processor method
+                    int averageLivableArea = (int) Processor.calculateAverageLivableArea(livableArea, zipCodeLivableArea);
+                    break;
+
+                case "6":
+                    //prompt user to enter 5 digit zip code
+                    int zipCodeMarketValPerCap = promptForZipCode();
+                    // result is truncated to an int
+                    int marketValuePerCap = (int) Processor.calculateMarketValuePerCapita(population, marketValue, zipCodeMarketValPerCap);
+                    break;
+
+                case "7":
+                    Processor.calculateVaccinationPropertyValueCorrelation();
+                    break;
+
+                // case where user inputs something invalid
+                default:
+                    System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
+                    System.out.flush();
+                    break;
             }
-            // catch exceptions and display
-            catch (Exception e) {
-                System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
-                System.out.flush();
-                scanner.nextLine();
-            }
         }
+        // catch exceptions and display
+        catch (Exception e) {
+            System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
+            System.out.flush();
+            scanner.nextLine();
+        }
+    }
 
 
     /**
@@ -143,6 +168,57 @@ public class PresentationUI {
         System.out.println("Press 6 to show the total market value of properties, per capita, for a specified ZIP Code.");
         System.out.println("Press 7 to show the results of our customer feature.");
         System.out.flush();
+    }
+
+    /**
+     * helper method that validates if the input is in the right format
+     */
+    private boolean isValidZipCode(String zipCode) {
+        return zipCode.matches("\\d{5}");
+    }
+
+    /**
+     * helper method to prompt the user for a valid 5-digit zip code
+     *
+     * @return a validated 5-digit Philadelphia zip code as int
+     */
+    private int promptForZipCode() {
+        System.out.println("Please enter a 5-digit Philadelphia zip code.");
+        System.out.flush();
+        String zipInput = scanner.nextLine().trim();
+
+        // validate format and reprompt if not valid
+        while (!isValidZipCode(zipInput)) {
+            System.out.println("Invalid. Please enter a valid 5-digit Philadelphia zip code:");
+            System.out.flush();
+            zipInput = scanner.nextLine().trim();
+        }
+        int zipCode = Integer.parseInt(zipInput);
+
+        return zipCode;
+    }
+
+    /**
+     * helper method that validates if the input follows the YYYY MM DD date format
+     */
+    private boolean isValidDateFormat(String date) {
+        if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            return false;
         }
 
+        String[] parts = date.split("-");
+        int month = Integer.parseInt(parts[1]);
+        int day = Integer.parseInt(parts[2]);
+
+        if (month < 1 || month > 12) {
+            return false;
+        }
+
+        if (day < 1 || day > 31) {
+            return false;
+        }
+
+        return true;
+
     }
+}
