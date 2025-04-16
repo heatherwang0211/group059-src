@@ -20,12 +20,12 @@ public abstract class CovidJsonReader implements COVIDDataReader{
 
         try {
             FileReader flieReader = new FileReader(fileName);
-            JSONArray covidArray = (JSONArray) parser.parse(reader);
+            JSONArray covidArray = (JSONArray) parser.parse(fileName);
 
             for (Object row : covidArray) {
-                JSONObject instanceOfJson = (JsonObject) row;
+                JSONObject instanceOfJson = (JSONObject) row;
                 String zipCodeCell = (String) instanceOfJson.get("zip_code");
-                if (zipCodeCell = null) { // make sure there is a valid zipCode
+                if (zipCodeCell == null) { // make sure there is a valid zipCode
                     continue;
                 }
                 String zipCode = zipCodeCell.trim();
@@ -44,6 +44,8 @@ public abstract class CovidJsonReader implements COVIDDataReader{
                 if (allDigits == false) {
                     continue; // skip if the zipcode is poorly formatted
                 }
+                //HW: updated zip code to integer
+                int zipCodeInt = Integer.parseInt(zipCode);
 
                 // ZH need to confirm that this works. DOUBLE CHECK
                 String timeStamp = (String) instanceOfJson.get("etl_timestamp");
@@ -54,16 +56,17 @@ public abstract class CovidJsonReader implements COVIDDataReader{
                     timeStamp = timeStamp.trim();
                 }
 
-                double partialVaccinatedCount = process(rows[2]);
-                double fullyVaccinatedCount = process(rows[3]);
-                double negativeCasesCount = process(rows[4]);
-                double positiveCasesCount = process(rows[5]);
-                double hospitalizationCount = process(rows[6]);
-                double deathCount = process(rows[7]);
-                double boosterShotCount = process(rows[8]);
+                double partialVaccinatedCount = process((String) instanceOfJson.get("partially_vaccinated"));
+                double fullyVaccinatedCount = process((String) instanceOfJson.get("fully_vaccinated"));
+                double negativeCasesCount = process((String) instanceOfJson.get("NEG"));
+                double positiveCasesCount = process((String) instanceOfJson.get("POS"));
+                double hospitalizationCount = process((String) instanceOfJson.get("hospitalized"));
+                double deathCount = process((String) instanceOfJson.get("deaths"));
+                double boosterShotCount = process((String) instanceOfJson.get("boosted"));
+
 
                 CovidData covidInstance = new CovidData(
-                        zipCode, negativeCasesCount, positiveCasesCount, deathCount, hospitalizationCount, partialVaccinatedCount, fullyVaccinatedCount, boosterShotCount, timeStamp);
+                        zipCodeInt, negativeCasesCount, positiveCasesCount, deathCount, hospitalizationCount, partialVaccinatedCount, fullyVaccinatedCount, boosterShotCount, timeStamp);
                 covidDataRaw.add(covidInstance);
             }
         }
@@ -72,8 +75,6 @@ public abstract class CovidJsonReader implements COVIDDataReader{
             }
 
             return covidDataRaw;
-
-
 
         }
 
@@ -94,5 +95,9 @@ public abstract class CovidJsonReader implements COVIDDataReader{
         }
 
 
+    }
+        // fallback in case of invalid data, treating it as 0.0
+        return 0.0;
+    }
 }
 

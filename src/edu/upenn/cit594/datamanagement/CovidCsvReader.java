@@ -48,6 +48,8 @@ public abstract class CovidCsvReader implements COVIDDataReader {
             if (allDigits == false) {  // use the flag to determine whether or not the zipcode is valid
                 continue;
             }
+            //HW: updated zip code to integer
+            int zipCodeInt = Integer.parseInt(zipCode);
 
             String timeStampCell = rows[1];  // grab the right cell for timezone and store it
             String timeStamp = timeStampCell.trim();
@@ -61,7 +63,7 @@ public abstract class CovidCsvReader implements COVIDDataReader {
             double boosterShotCount = process(rows[8]);
 
             CovidData covidInstance = new CovidData(
-                    zipCode, negativeCasesCount, positiveCasesCount, deathCount, hospitalizationCount, partialVaccinatedCount, fullyVaccinatedCount, boosterShotCount, timeStamp);
+                    zipCodeInt, negativeCasesCount, positiveCasesCount, deathCount, hospitalizationCount, partialVaccinatedCount, fullyVaccinatedCount, boosterShotCount, timeStamp);
             covidDataRaw.add(covidInstance);
         }
     } catch (IOException e) {
