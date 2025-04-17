@@ -52,22 +52,23 @@ public class Processor {
      * @param timeStamp
      * @return
      *
-     * I think we need to check this one. We may not need Timestamp at all
      * HW: In the requirement it asks the user to input a YYYYMMDD to search for the date so we need it
+     * ZH Response: I added and used the timestamp field in the updated logic
      * HW: i removed partial and full to just have 1 vaccination input, bc it is a choice made by the user
+     * ZH Response: noted - even if the user selects, I kept the helper method generic and passed a null so we can use it as is.
      */
     public static int calculateVaccinationsPerCapita(int vaccination, int zipCode, String timeStamp) {
-    int population = fetchPopulationsUsingZipCode(zipCode);
-    if (population == 0) {
-        return 0;
-    }
-    double totalVaccines = vaccination;
-    // HW: we need something else here that uses timeStamp to look for the vax rate on that specific date
+        int population = fetchPopulationsUsingZipCode(zipCode);
+        if (population == 0) {
+            return 0;
+        }
 
-    double finalValue = totalVaccines / population;
+        double totalVaccines = getVaccinationCountForZipDate(
+                String.valueOf(zipCode),
+                timeStamp,
+                null);
 
-    return (int) finalValue;
-
+        return (int) (totalVaccines / population);
     }
 
     /**
@@ -78,8 +79,26 @@ public class Processor {
      */
     public static int calculateAverageMarketValue(int marketValue, int zipCode) {
         // use the two inputs and count number of entries for properties to use as average
+        // ZH: Sounds good - based on that, i came up with the logic below:
+        if (propertiesList == null) {
+            return 0;
+        }
 
-        return 0;
+        int propertyCount = 0;
+        String zipCodeString = String.valueOf(zipCode);
+
+        for (Properties property : propertiesList) {
+            if (zipStr.equals(property.zipCode())) {
+                propertyCount++;
+            }
+        }
+
+        if (propertyCount == 0) {
+            return 0;
+        }
+
+        double average = (double) marketValue / propertyCount;
+        return (int) average;
     }
 
     /**
@@ -90,7 +109,27 @@ public class Processor {
      */
     public static int calculateAverageLivableArea(int livableArea, int zipCode) {
         // use the two inputs and count number of entries for properties to use as average
-        return 0;
+        // ZH: Sounds good - based on that, i came up with the logic below:
+
+        if (propertiesList == null) {
+            return 0;
+        }
+
+        int propertyCount = 0;
+        String zipCodeString = String.valueOf(zipCode);
+
+        for (Properties property : propertiesList) {
+            if (zipStr.equals(property.zipCode())) {
+                propertyCount++;
+            }
+        }
+
+        if (propertyCount == 0) {
+            return 0;
+        }
+
+        double average = (double) livableArea / propertyCount;
+        return (int) average;
     }
 
     /**
@@ -129,6 +168,74 @@ public class Processor {
         }
         return 0;
     }
+
+    /**
+     * Returns a list of properties from a given zipCode
+     * @param zipCode
+     * @return
+     */
+    private List<Properties> getPropertiesForZip(String zipCode) {
+        List<Properties> listOfProperties = new ArrayList<>();
+        if (propertiesList == null) {
+            return listOfProperties;
+        }
+        for (Properties property : propertiesList) {
+            if (zipCode.equals(property.zipCode())) {
+                listOfProperties.add(prop);
+            }
+        }
+        return listOfProperties;
+    }
+
+    /**
+     * Sums up all the market values of all the homes in a given zipCode
+     * @param zipCode
+     * @return
+     */
+    private double getTotalMarketValueForZip(String zipCode) {
+        double total = 0.0;
+        if (propertiesList == null) {
+            return 0.0;
+        }
+        for (Properties property : propertiesList) {
+            if (zipCode.equals(property.zipCode())) {
+                total += property.marketValue();
+            }
+        }
+        return total;
+    }
+
+    /**
+     * Returns the count of vaccinations (full, partial or total) for a given timestamp.
+     * @param zipCode
+     * @param date
+     * @param levelOfVaccination
+     * @return
+     */
+    private double getVaccinationCountForZipDate(String zipCode,
+                                                 String date,
+                                                 Boolean levelOfVaccination) {
+        double total = 0.0;
+        if (covidData == null) {
+            return 0.0;
+        }
+        for (CovidData row : covidData) {
+            if (zipCode.equals(row.zipCode()) &&
+                    row.timeStamp().startsWith(date)) {
+
+                if (levelOfVaccination == null) {
+                    total += row.partialVaxCount() + row.fullyVaxCount();
+                } else if (levelOfVaccination) {
+                    total += row.fullyVaxCount();
+                } else {
+                    total += row.partialVaxCount();
+                }
+            }
+        }
+        return total;
+    }
+
+
 
 }
 
