@@ -74,7 +74,10 @@ public class PresentationUI {
 
                 case "2":
                     // it should just display total population for ALL the zip codes together
-                    Processor.calculateTotalPopulation(population, zipCode);
+                    System.out.println("BEGIN OUTPUT");
+                    int totalPopulation = Processor.calculateTotalPopulation(population, zipCode);
+                    System.out.println(totalPopulation);
+                    System.out.println("END OUTPUT");
                     break;
 
                 case "3":
@@ -101,32 +104,47 @@ public class PresentationUI {
                         dateInput = scanner.nextLine().trim();
                     }
 
-                    Processor.calculateVaccinationsPerCapita(vaccination, zipCode, timeStamp);
+                    System.out.println("BEGIN OUTPUT");
+                    int vacPerCapita = Processor.calculateVaccinationsPerCapita(vaccination, zipCode, timeStamp);
+                    System.out.println(vacPerCapita);
+                    System.out.println("END OUTPUT");
                     break;
 
                 case "4":
                     //prompt user to enter 5 digit zip code
                     int zipCodeAvgMarketVal = promptForZipCode();
                     // result is truncated to an int, call processor method
+                    System.out.println("BEGIN OUTPUT");
                     int averageMarketValue = (int) Processor.calculateAverageMarketValue(marketValue, zipCodeAvgMarketVal);
+                    System.out.println(averageMarketValue);
+                    System.out.println("END OUTPUT");
                     break;
 
                 case "5":
                     //prompt user to enter 5 digit zip code
                     int zipCodeLivableArea = promptForZipCode();
                     // result is truncated to an int, call processor method
+                    System.out.println("BEGIN OUTPUT");
                     int averageLivableArea = (int) Processor.calculateAverageLivableArea(livableArea, zipCodeLivableArea);
+                    System.out.println(averageLivableArea);
+                    System.out.println("END OUTPUT");
                     break;
 
                 case "6":
                     //prompt user to enter 5 digit zip code
                     int zipCodeMarketValPerCap = promptForZipCode();
                     // result is truncated to an int
+                    System.out.println("BEGIN OUTPUT");
                     int marketValuePerCap = (int) Processor.calculateMarketValuePerCapita(population, marketValue, zipCodeMarketValPerCap);
+                    System.out.println(marketValuePerCap);
+                    System.out.println("END OUTPUT");
                     break;
 
                 case "7":
-                    Processor.calculateVaccinationPropertyValueCorrelation();
+                    System.out.println("BEGIN OUTPUT");
+                    double correlation = Processor.calculateVaccinationPropertyValueCorrelation();
+                    System.out.println(correlation);
+                    System.out.println("END OUTPUT");
                     break;
 
                 // case where user inputs something invalid
