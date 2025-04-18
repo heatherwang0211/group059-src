@@ -11,10 +11,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CovidJsonReader implements COVIDDataReader{
-    //HW: updated w override and abstract class
+public class CovidJsonReader implements COVIDDataReader{
+    //HW: updated w override
     @Override
-    public List<CovidData> readData(String fileName) {
+    public List<CovidData> CovidReader(String fileName) {
         List<CovidData> covidDataRaw = new ArrayList<>();
         JSONParser parser = new JSONParser();
 

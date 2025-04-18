@@ -10,10 +10,9 @@ import java.util.List;
 
 public interface COVIDDataReader {
 
-    List<CovidData> readData(String filename); // we might want to make this an ArrayList since we are only adding to the back
+    //List<CovidData> readData(String filename); // we might want to make this an ArrayList since we are only adding to the back
 
-
-    List<CovidData> CovidCsvReader(String fileName);
+    List<CovidData> CovidReader(String fileName);
 }
 
 // interface for json and csv versions of covid data

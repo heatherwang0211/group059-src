@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CovidCsvReader implements COVIDDataReader {
-    // HW: updated with override and abstract class
+public class CovidCsvReader implements COVIDDataReader {
+    // HW: updated with override
     @Override
-    public List<CovidData> CovidCsvReader(String fileName) {
+    public List<CovidData> CovidReader(String fileName) {
     List<CovidData> covidDataRaw = new ArrayList<>();
 
     try (BufferedReader buffReader = new BufferedReader(new FileReader(fileName)))

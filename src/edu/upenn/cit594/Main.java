@@ -8,6 +8,7 @@ import edu.upenn.cit594.processor.Processor;
 import edu.upenn.cit594.ui.PresentationUI;
 import edu.upenn.cit594.util.CovidData;
 import edu.upenn.cit594.util.Population;
+import edu.upenn.cit594.util.Properties;
 
 public class Main {
     public static void main(String[] args) {
@@ -41,17 +42,19 @@ public class Main {
         }
         List<CovidData> covidData = new ArrayList<>();
         if (fileNameCOVID.toLowerCase().endsWith(".json")) {
-            List<CovidData> jsonCovid = CovidJsonReader.readData(fileNameCOVID);
+            COVIDDataReader reader = new CovidJsonReader();
+            List<CovidData> jsonCovid = reader.CovidReader(fileNameCOVID);
             covidData.addAll(jsonCovid);
         }
         if (fileNameCOVID.toLowerCase().endsWith(".txt")) {
-            List<CovidData> txtCovid = CovidCsvReader.CovidCsvReader(fileNameCOVID);
+            COVIDDataReader reader = new CovidCsvReader();
+            List<CovidData> txtCovid = reader.CovidReader(fileNameCOVID);
             covidData.addAll(txtCovid);
         }
 
         //PROPERTIES: read file
         List<Properties> properties = new ArrayList<>();
-        List<Properties> propertiesList = PropertiesCsvReader.readPropertiesCsv(fileNameProperties);
+        List<edu.upenn.cit594.util.Properties> propertiesList = PropertiesCsvReader.readPropertiesCsv(fileNameProperties);
         properties.addAll(propertiesList);
 
         // POPULATION: read file

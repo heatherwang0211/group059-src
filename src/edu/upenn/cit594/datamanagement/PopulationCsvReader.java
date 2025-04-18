@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PopulationCsvReader {
+public abstract class PopulationCsvReader {
 
-    public List<Population> readPopulation(String fileName) {
+    public static List<Population> readPopulation(String fileName) {
         List<Population> population = new ArrayList<>();
 
         try (BufferedReader buffReader = new BufferedReader(new FileReader(fileName))) {

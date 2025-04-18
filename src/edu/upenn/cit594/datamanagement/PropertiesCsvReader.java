@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class PropertiesCsvReader {
     // HW: updated with override and abstract class
-    public List<Properties> readPropertiesCsv(String fileName) {
+    public static List<Properties> readPropertiesCsv(String fileName) {
         List<Properties> properties= new ArrayList<>();
 
         try (BufferedReader buffReader = new BufferedReader(new FileReader(fileName)))
