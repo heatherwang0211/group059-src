@@ -340,7 +340,7 @@ public class Processor {
 
                 if (levelOfVaccination == null) {
                     total += row.partialVaxCount() + row.fullyVaxCount();
-                } else if (levelOfVaccination) {
+                } else if (levelOfVaccination == true) {
                     total += row.fullyVaxCount();
                 } else {
                     total += row.partialVaxCount();
