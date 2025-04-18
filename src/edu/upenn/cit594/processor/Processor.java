@@ -20,9 +20,10 @@ public class Processor {
 
     /**
      * Constuctor for the processor that needs the logger + all the data-lists.
+     *
      * @param logger
      */
-    public Processor(Logger logger, List<CovidData> covidData,List<Population> populationList,  List<Properties> propertiesList) {
+    public Processor(Logger logger, List<CovidData> covidData, List<Population> populationList, List<Properties> propertiesList) {
         this.logger = logger;
         this.covidData = covidData;
         this.populationList = populationList;
@@ -31,6 +32,7 @@ public class Processor {
 
     /**
      * Computes total populations
+     *
      * @param population
      * @param zipCode
      * @return
@@ -47,12 +49,11 @@ public class Processor {
     /**
      * this method calculates the vaccination rate per capita and the vaccination input can either be partial or full
      * vaccination data, which is inputted by the user
+     *
      * @param vaccination
      * @param zipCode
      * @param timeStamp
-     * @return
-     *
-     * HW: In the requirement it asks the user to input a YYYYMMDD to search for the date so we need it
+     * @return HW: In the requirement it asks the user to input a YYYYMMDD to search for the date so we need it
      * ZH Response: I added and used the timestamp field in the updated logic
      * HW: i removed partial and full to just have 1 vaccination input, bc it is a choice made by the user
      * ZH Response: noted - even if the user selects, I kept the helper method generic and passed a null so we can use it as is.
@@ -66,13 +67,12 @@ public class Processor {
         double totalVaccines = getVaccinationCountForZipDate(
                 String.valueOf(zipCode),
                 timeStamp,
-                null);
+                null); // pass null to get all vaccinations
 
         return (int) (totalVaccines / population);
     }
 
     /**
-     *
      * @param marketValue
      * @param zipCode
      * @return
@@ -102,7 +102,6 @@ public class Processor {
     }
 
     /**
-     *
      * @param livableArea
      * @param zipCode
      * @return
@@ -133,24 +132,69 @@ public class Processor {
     }
 
     /**
-     *
      * @param population
      * @param marketValue
      * @param zipCode
      * @return
      */
     public static int calculateMarketValuePerCapita(int population, int marketValue, int zipCode) {
-        return 0;
+        if (population == 0 || propertiesList == null) {
+            return 0;
+        }
+
+        if (population == 0 || propertiesList == null) {
+            return 0;
+        }
+
+        String zipCodeString = String.valueOf(zipCode);
+        int propertyCount = 0;
+
+        for (Properties property : propertiesList) {
+            if (zipCodeString.equals(property.zipCode())) {
+                propertyCount++;
+            }
+        }
+        if (propertyCount == 0) {
+            return 0;
+        }
+
+        double perCapita = (double) marketValue / population;
+        return (int) perCapita;
     }
 
     /**
      * this method calculates the ratio of death rate to avg market value of properties in a ZIP code
      * death rate = death from covid data / population data
      * divided by average market value = total market value in zip code/ number of houses
+     *
      * @return death to income ratio
      */
     public static int calculateDeathToPropertyValueRatio(int population, int deathCount, int zipCode, int propertyValue) {
-        return 0;
+        if (population == 0 || propertiesList == null) {
+            return 0;
+        }
+
+        int propertyCount = 0;
+        String zipCodeString = String.valueOf(zipCode);
+
+        for (Properties property : propertiesList) {
+            if (zipCodeString.equals(property.zipCode())) {
+                propertyCount++;
+            }
+        }
+        if (propertyCount == 0) {
+            return 0;
+        }
+
+        if (propertyValue == 0) {
+            return 0;
+        }
+
+        double deathRate = (double) deathCount / population;
+        double averageMarketValue = (double) propertyValue / propertyCount;
+        double finalRatio = deathRate / averageMarketValue;
+
+        return (int) finalRatio;
     }
 
     //HW: I am not too sure if we should use static or instances here
@@ -171,6 +215,7 @@ public class Processor {
 
     /**
      * Returns a list of properties from a given zipCode
+     *
      * @param zipCode
      * @return
      */
@@ -189,6 +234,7 @@ public class Processor {
 
     /**
      * Sums up all the market values of all the homes in a given zipCode
+     *
      * @param zipCode
      * @return
      */
@@ -207,6 +253,7 @@ public class Processor {
 
     /**
      * Returns the count of vaccinations (full, partial or total) for a given timestamp.
+     *
      * @param zipCode
      * @param date
      * @param levelOfVaccination
@@ -234,7 +281,6 @@ public class Processor {
         }
         return total;
     }
-
 
 
 }
