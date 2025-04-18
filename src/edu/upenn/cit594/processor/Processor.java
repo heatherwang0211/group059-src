@@ -16,7 +16,8 @@ public class Processor {
     // method for using instance vs. static
     private static List<Population> populationList;
     private List<Properties> propertiesList;
-// added comment
+    private Map<Integer, Integer> VaccinationMarketValueByZipCode = new HashMap<>();
+
 
     /**
      * Constuctor for the processor that needs the logger + all the data-lists.
@@ -250,6 +251,73 @@ public class Processor {
         }
         return total;
     }
+
+    /**
+     * This method computs the Vaccination Market Value Ratio which looks at the level of vaccination and marketvalues of a given zipcode. This is a key purchasing signal for someone that wants to pay for a nice house that also has good vaccination coverage
+     *
+     * @param zipCode
+     * @param date
+     * @return
+     */
+    public int getVaccinationValueRatio(int zipCode, String date) {
+
+        // This is our memoization strategy at work where we check if the list has the ratio, if it doesn't, we create it.
+        if (vaxValueRatioByZip.containsKey(zipCode)) {
+            return vaxValueRatioByZip.get(zipCode);
+        } else {
+
+            int ratio = computeVaccinationValueRatio(zipCode, date);
+            vaxValueRatioByZip.put(zipCode, ratio);
+            return ratio;
+        }
+    }
+
+    /**
+     * Helper method to actually crunch the numbers of our Vaccination Market Value Ratio.
+     *
+     * @param zipCode
+     * @param date
+     * @return
+     */
+    private int computeVaccinationValueRatio(int zipCode, String date) {
+
+        String zipCodeString = String.valueOf(zipCode);
+
+        if (propertiesList == null) {
+            return 0;
+        }
+
+        double totalMarketValue = 0.0;
+        int propertyCount = 0;
+        for (Properties property : propertiesList) {
+            if (stringZipCode.equals(property.zipCode())) {
+                totalMarketValue += property.marketValue();
+                propertyCount++;
+            }
+        }
+
+        // avoid a divide by zero situation
+        if (propertyCount == 0) {
+            return 0;
+        }
+
+        double averageMarketValue = totalMarketValue / propertyCount;
+
+        int population = getPopulationsUsingZipCode(zipCode);
+        // avoid divide by zero for the population portion
+        if (population == 0) {
+            return 0;
+        }
+        double vaccinated = getVaccinationCountForZipDate(zipCodeString, date, null);
+        double vaccinationPercentage = (vaccinated / population) * 100.0;
+        if (vaccinationPercentage == 0.0) {
+            return 0;
+        }
+
+        int finalReturn = (int) (averageMarketValue / vaccinationPercentage);
+        return finalReturn;
+    }
+
 
     /**
      * Returns the count of vaccinations (full, partial or total) for a given timestamp.
