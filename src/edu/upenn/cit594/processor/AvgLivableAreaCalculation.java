@@ -16,22 +16,23 @@ public class AvgLiveableAreaCalculation implements strategyAverageCalculator{
     }
 
     @Override
-    public double crunchNumbers(int zipCode) {
+    public int crunchNumbers(int zipCode) {
         if (propertiesList == null) {
             return 0;
         }
         double numerator = 0.0;
         int denominator = 0;
         for (Properties prop : propertiesList) {
-            if (prop.zipCode().equals(zipCode)) {
+            if (prop.zipCode() == zipCode) {
                 numerator += prop.livableArea();
                 denominator++;
             }
         }
-        if (count == 0) {
+        if (denominator == 0) {
             return 0;
         }
-        double result = (double) (numerator / denominator);
+        double resultDouble = (double) (numerator / denominator);
+        int result = (int) resultDouble;
         return result;
     }
 }

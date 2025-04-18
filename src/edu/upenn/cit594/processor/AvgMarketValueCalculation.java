@@ -21,7 +21,7 @@ public class AvgMarketValueCalculation implements strategyAverageCalculator {
     }
 
     @Override
-    public int crunchNumbers(String zipCode) {
+    public int crunchNumbers(int zipCode) {
         if (propertiesList == null) {
             return 0;
         }
@@ -30,7 +30,7 @@ public class AvgMarketValueCalculation implements strategyAverageCalculator {
 
         // Loop through the properties in the list and accumulate the numerators and denominators
         for (Properties property : propertiesList) {
-            if (property.zipCode().equals(zipCode)) {
+            if (property.zipCode() == zipCode) {
                 numerator += property.marketValue();
                 denominator++;
             }
@@ -38,7 +38,8 @@ public class AvgMarketValueCalculation implements strategyAverageCalculator {
         if (denominator == 0) {
             return 0;
         }
-        double result = numerator / denominator;
+        double resultDouble = numerator / denominator;
+        int result = (int) resultDouble;
         return result;
     }
 }
