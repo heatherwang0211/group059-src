@@ -15,31 +15,34 @@ public class AvgMarketValueCalculation implements strategyAverageCalculator {
         this.propertiesList = propertiesList;
     }
 
-    @Override
+   /* @Override
     public double crunchNumbers(int zipCode) {
         return 0;
-    }
+    }*/
 
     @Override
-    public int crunchNumbers(int zipCode) {
-        if (propertiesList == null) {
+    public double calculate(List<Data> data, String columnName) {
+
+        if (data == null || data.isEmpty()) {
             return 0;
         }
-        double numerator = 0.0;
-        int denominator = 0;
 
-        // Loop through the properties in the list and accumulate the numerators and denominators
-        for (Properties property : propertiesList) {
-            if (property.zipCode() == zipCode) {
-                numerator += property.marketValue();
+        double numerator   = 0.0;
+        int    denominator = 0;
+        String zipCodeString = columnName;
+
+        for (Data generic : data) {
+            Properties property = (Properties) generic;
+            if (zipCodeString.equals(property.zipCode())) {
+                numerator   += property.marketValue();
                 denominator++;
             }
         }
+
         if (denominator == 0) {
             return 0;
         }
-        double resultDouble = numerator / denominator;
-        int result = (int) resultDouble;
-        return result;
+
+        return numerator / denominator;
     }
 }
