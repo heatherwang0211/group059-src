@@ -4,45 +4,29 @@ import edu.upenn.cit594.util.Properties;
 import java.util.List; //
 
 public class AvgMarketValueCalculation implements strategyAverageCalculator {
-
-    private List<Properties> propertiesList;
-
-    /**
-     * This computes the average market value for a given set of properties ingested (and cleaned) in the reader files
-     * @param propertiesList
-     */
-    public AvgMarketValueCalculation(List<Properties> propertiesList) {
-        this.propertiesList = propertiesList;
-    }
-
-   /* @Override
-    public double crunchNumbers(int zipCode) {
-        return 0;
-    }*/
-
     @Override
-    public double calculate(List<Data> data, String columnName) {
+    public int calculate(List<Properties> propertiesList, int zipCode, String calculationType) {
 
-        if (data == null || data.isEmpty()) {
+        if (propertiesList == null || propertiesList.isEmpty() || calculationType == null || !calculationType.equals("marketValue")) {
+
             return 0;
         }
 
-        double numerator   = 0.0;
-        int    denominator = 0;
-        String zipCodeString = columnName;
+        double numerator = 0.0;
+        int count = 0;
+        String  zipCodeString = String.valueOf(zipCode);
 
-        for (Data generic : data) {
-            Properties property = (Properties) generic;
+        for (Properties property : propertiesList) {
             if (zipCodeString.equals(property.zipCode())) {
-                numerator   += property.marketValue();
-                denominator++;
+                numerator += property.marketValue();
+                count++;
             }
         }
 
-        if (denominator == 0) {
+        if (count == 0) {
             return 0;
         }
-
-        return numerator / denominator;
+        int finalResult = (int) (numerator / count);
+        return finalResult;
     }
 }

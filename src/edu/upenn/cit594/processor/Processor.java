@@ -17,6 +17,9 @@ public class Processor {
     private static List<Population> populationList;
     private static List<Properties> propertiesList;
     private static Map<Integer, Integer> VaccinationMarketValueByZipCode = new HashMap<>();
+    private static strategyAverageCalculator avgMarketValue = new AvgMarketValueCalculation();
+    private static strategyAverageCalculator avgLivableArea = new AvgLiveableAreaCalculation();
+
 
     /**
      * Created this innit method so that we can use the static methods without needing an instance of the class.
@@ -95,23 +98,7 @@ public class Processor {
      * @return
      */
     public static int calculateAverageMarketValue(int zipCode) {
-
-        double numerator = 0.0;
-        int denominator = 0;
-        String zipCodeString = String.valueOf(zipCode);
-
-        for (Properties property : propertiesList) {
-            if (zipCodeString.equals(property.zipCode())) {
-                numerator += property.marketValue();
-                denominator++;
-            }
-        }
-        if (denominator == 0) {
-            int result = 0;
-            return result;
-        }
-        int result = (int) (numerator / denominator);
-        return result;
+        return avgMarketValue.calculate(propertiesList, zipCode, "marketValue");
     }
 
     /**
@@ -120,23 +107,7 @@ public class Processor {
      * @return
      */
     public static int calculateAverageLivableArea(int zipCode) {
-
-        double numerator = 0.0;
-        int denominator = 0;
-        String zipCodeString = String.valueOf(zipCode);
-
-        for (Properties property : propertiesList) {
-            if (zipCodeString.equals(property.zipCode())) {
-                numerator += property.livableArea();
-                denominator++;
-            }
-        }
-        if (denominator == 0) {
-            int result = 0;
-            return result;
-        }
-        int result = (int) (numerator / denominator);
-        return result;
+        return avgLivableArea.calculate(propertiesList, zipCode, "livableArea");
     }
 
     /**
