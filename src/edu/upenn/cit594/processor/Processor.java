@@ -5,356 +5,334 @@ import edu.upenn.cit594.util.CovidData;
 import edu.upenn.cit594.util.Population;
 import edu.upenn.cit594.util.Properties;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Processor {
-    private Logger logger;
+    private static Logger logger;
 
-    //need to add the lists to store and manipulate this information later
-    private List<CovidData> covidData;
+    private static List<CovidData> covidData;
     private static List<Population> populationList;
-    private List<Properties> propertiesList;
-    private Map<Integer, Integer> VaccinationMarketValueByZipCode = new HashMap<>();
-
+    private static List<Properties> propertiesList;
+    private static Map<Integer, Integer> VaccinationMarketValueByZipCode = new HashMap<>();
 
     /**
-     * Constuctor for the processor that needs the logger + all the data-lists.
+     * Created this innit method so that we can use the static methods without needing an instance of the class.
      *
      * @param logger
+     * @param populationList
+     * @param propertiesList
+     * @param covidData
      */
-    public Processor(Logger logger, List<CovidData> covidData, List<Population> populationList, List<Properties> propertiesList) {
-        this.logger = logger;
-        this.covidData = covidData;
-        this.populationList = populationList;
-        this.propertiesList = propertiesList;
+    public static void init(Logger logger,
+                            List<Population> populationList,
+                            List<Properties> propertiesList,
+                            List<CovidData> covidData) {
+
+        Processor.logger = logger;
+        Processor.populationList = populationList;
+        Processor.propertiesList = propertiesList;
+        Processor.covidData = covidData;
     }
 
     /**
-     * Computes total populations
+     * Back when we were using an instance version of the Processor, we needed this, but not really anymore. Leaving here for posterity
      *
-     * @param population
-     * @param zipCode
+     * @param logger
+     * @param covidData
+     * @param populationList
+     * @param propertiesList
+     */
+    public Processor(Logger logger,
+                     List<CovidData> covidData,
+                     List<Population> populationList,
+                     List<Properties> propertiesList) {
+
+        Processor.logger = logger;
+        Processor.covidData = covidData;
+        Processor.populationList = populationList;
+        Processor.propertiesList = propertiesList;
+    }
+
+    /**
+     * Calculates the total population of all the zipCodes
      * @return
      */
-    public static int calculateTotalPopulation(int population, int zipCode) {
+    public static int calculateTotalPopulation() {
         int totalPopulation = 0;
-        for (Population instance : populationList) {
-            if (instance.getZipCode() == zipCode) // Need to check the getPopulations field.
-            totalPopulation += instance.getPopulation();
+        for (Population row : populationList) {
+            totalPopulation += row.getPopulation();
         }
-        return totalPopulation;
+        int result = totalPopulation;
+        return result;
     }
 
     /**
-     * this method calculates the vaccination rate per capita and the vaccination input can either be partial or full
-     * vaccination data, which is inputted by the user
-     *
-     * @param vaccination
+     * Calculates the vaccinations per capita given the zipCode
      * @param zipCode
-     * @param timeStamp
-     * @return HW: In the requirement it asks the user to input a YYYYMMDD to search for the date so we need it
-     * ZH Response: I added and used the timestamp field in the updated logic
-     * HW: i removed partial and full to just have 1 vaccination input, bc it is a choice made by the user
-     * ZH Response: noted - even if the user selects, I kept the helper method generic and passed a null so we can use it as is.
+     * @param date
+     * @param vaccinationStatus
+     * @return
      */
-    public static int calculateVaccinationsPerCapita(int vaccination, int zipCode, String timeStamp, List<CovidData> covidDataList) {
+    public static double calculateVaccinationsPerCapita(int zipCode, String date, Boolean vaccinationStatus) {
+
         int population = fetchPopulationsUsingZipCode(zipCode);
         if (population == 0) {
-            return 0;
+            double result = 0;
+            return result;
         }
 
-        double totalVaccines = getVaccinationCountForZipDate(
-                String.valueOf(zipCode),
-                timeStamp,
-                null, covidDataList); // pass null to get all vaccinations
-
-        return (int) (totalVaccines / population);
-    }
-
-    /**
-     * @param marketValue
-     * @param zipCode
-     * @return
-     */
-    public static int calculateAverageMarketValue(int marketValue, int zipCode,List<Properties> propertiesList) {
-        // use the two inputs and count number of entries for properties to use as average
-        // ZH: Sounds good - based on that, i came up with the logic below:
-        if (propertiesList == null) {
-            return 0;
-        }
-
-        int propertyCount = 0;
-        String zipCodeString = String.valueOf(zipCode);
-        int zipCodeInt = Integer.parseInt(zipCodeString);
-
-        for (Properties property : propertiesList) {
-            if (zipCodeInt == property.zipCode()) {
-                propertyCount++;
-            }
-        }
-
-        if (propertyCount == 0) {
-            return 0;
-        }
-
-        double average = (double) marketValue / propertyCount;
-        return (int) average;
-    }
-
-    /**
-     * @param livableArea
-     * @param zipCode
-     * @return
-     */
-    public static int calculateAverageLivableArea(int livableArea, int zipCode, List<Properties> propertiesList) {
-        // use the two inputs and count number of entries for properties to use as average
-        // ZH: Sounds good - based on that, i came up with the logic below:
-
-        if (propertiesList == null) {
-            return 0;
-        }
-
-        int propertyCount = 0;
-        String zipCodeString = String.valueOf(zipCode);
-        int zipCodeInt = Integer.parseInt(zipCodeString);
-
-        for (Properties property : propertiesList) {
-            if (zipCodeInt == property.zipCode()) {
-                propertyCount++;
-            }
-        }
-
-        if (propertyCount == 0) {
-            return 0;
-        }
-
-        double average = (double) livableArea / propertyCount;
-        return (int) average;
-    }
-
-    /**
-     * @param population
-     * @param marketValue
-     * @param zipCode
-     * @return
-     */
-    public static int calculateMarketValuePerCapita(int population, int marketValue, int zipCode, List<Properties> propertiesList) {
-        if (population == 0 || propertiesList == null) {
-            return 0;
-        }
-
-        if (population == 0 || propertiesList == null) {
-            return 0;
-        }
-
-        String zipCodeString = String.valueOf(zipCode);
-        int propertyCount = 0;
-
-        for (Properties property : propertiesList) {
-            if (zipCodeString.equals(property.zipCode())) {
-                propertyCount++;
-            }
-        }
-        if (propertyCount == 0) {
-            return 0;
-        }
-
-        double perCapita = (double) marketValue / population;
-        return (int) perCapita;
-    }
-
-    /**
-     * this method calculates the ratio of death rate to avg market value of properties in a ZIP code
-     * death rate = death from covid data / population data
-     * divided by average market value = total market value in zip code/ number of houses
-     *
-     * @return death to income ratio
-     */
-    public static int calculateDeathToPropertyValueRatio(int population, int deathCount, int zipCode, int propertyValue, List<Properties> propertiesList) {
-        if (population == 0 || propertiesList == null) {
-            return 0;
-        }
-
-        int propertyCount = 0;
-        String zipCodeString = String.valueOf(zipCode);
-
-        for (Properties property : propertiesList) {
-            if (zipCodeString.equals(property.zipCode())) {
-                propertyCount++;
-            }
-        }
-        if (propertyCount == 0) {
-            return 0;
-        }
-
-        if (propertyValue == 0) {
-            return 0;
-        }
-
-        double deathRate = (double) deathCount / population;
-        double averageMarketValue = (double) propertyValue / propertyCount;
-        double finalRatio = deathRate / averageMarketValue;
-
-        return (int) finalRatio;
-    }
-
-    //HW: I am not too sure if we should use static or instances here
-    // we are processing different data one by one which feels like instance
-    // but that also feels like creating a lot of inefficiencies
-    public static int fetchPopulationsUsingZipCode(int zipCode) {
-        if (populationList == null) {
-            return 0;
-        }
-
-        for (Population person : populationList) {
-            if (person.getZipCode() == zipCode) {
-                return (int) person.getPopulation();
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * Returns a list of properties from a given zipCode
-     *
-     * @param zipCode
-     * @return
-     */
-    private List<Properties> getPropertiesForZip(String zipCode) {
-        List<Properties> listOfProperties = new ArrayList<>();
-        if (propertiesList == null) {
-            return listOfProperties;
-        }
-        for (Properties property : propertiesList) {
-            if (zipCode.equals(property.zipCode())) {
-                listOfProperties.add(property);
-            }
-        }
-        return listOfProperties;
-    }
-
-    /**
-     * Sums up all the market values of all the homes in a given zipCode
-     *
-     * @param zipCode
-     * @return
-     */
-    private double getTotalMarketValueForZip(String zipCode) {
-        double total = 0.0;
-        if (propertiesList == null) {
-            return 0.0;
-        }
-        for (Properties property : propertiesList) {
-            if (zipCode.equals(property.zipCode())) {
-                total += property.marketValue();
-            }
-        }
-        return total;
-    }
-
-    /**
-     * This method computs the Vaccination Market Value Ratio which looks at the level of vaccination and marketvalues of a given zipcode. This is a key purchasing signal for someone that wants to pay for a nice house that also has good vaccination coverage
-     *
-     * @param zipCode
-     * @param date
-     * @return
-     */
-    public static int getVaccinationValueRatio(int zipCode, String date, List<Properties> propertiesList, List<CovidData> covidDataList) {
-
-        // This is our memoization strategy at work where we check if the list has the ratio, if it doesn't, we create it.
-        if (VaccinationMarketValueByZipCode.containsKey(zipCode)) {
-            return VaccinationMarketValueByZipCode.get(zipCode);
-        } else {
-
-            int ratio = computeVaccinationValueRatio(zipCode, date, propertiesList, covidDataList);
-            VaccinationMarketValueByZipCode.put(zipCode, ratio);
-            return ratio;
-        }
-    }
-
-    /**
-     * Helper method to actually crunch the numbers of our Vaccination Market Value Ratio.
-     *
-     * @param zipCode
-     * @param date
-     * @return
-     */
-    private static int computeVaccinationValueRatio(int zipCode, String date, List<Properties> propertiesList, List<CovidData> covidDataList) {
-
-        String zipCodeString = String.valueOf(zipCode);
-
-        if (propertiesList == null) {
-            return 0;
-        }
-
-        double totalMarketValue = 0.0;
-        int propertyCount = 0;
-        for (Properties property : propertiesList) {
-            if (zipCodeString.equals(property.zipCode())) {
-                totalMarketValue += property.marketValue();
-                propertyCount++;
-            }
-        }
-
-        // avoid a divide by zero situation
-        if (propertyCount == 0) {
-            return 0;
-        }
-
-        double averageMarketValue = totalMarketValue / propertyCount;
-        Population pop = new Population(zipCode, 0);
-        int population = (int)pop.getPopulation();
-        // avoid divide by zero for the population portion
-        if (population == 0) {
-            return 0;
-        }
-        double vaccinated = getVaccinationCountForZipDate(zipCodeString, date, null,  covidDataList);
-        double vaccinationPercentage = (vaccinated / population) * 100.0;
-        if (vaccinationPercentage == 0.0) {
-            return 0;
-        }
-
-        int finalReturn = (int) (averageMarketValue / vaccinationPercentage);
+        double vaccinations = getVaccinationCountForZipDate(String.valueOf(zipCode), date, vaccinationStatus);
+        double finalReturn = vaccinations / population;
         return finalReturn;
     }
 
-
     /**
-     * Returns the count of vaccinations (full, partial or total) for a given timestamp.
-     *
+     * Calculates teh average MarketValue for a given zipCode
      * @param zipCode
-     * @param date
-     * @param levelOfVaccination
      * @return
      */
-    private static double getVaccinationCountForZipDate(String zipCode,
-                                                        String date,
-                                                        Boolean levelOfVaccination,
-                                                        List<CovidData> covidDataList) {
+    public static int calculateAverageMarketValue(int zipCode) {
+
+        double numerator = 0.0;
+        int denominator = 0;
+        String zipCodeString = String.valueOf(zipCode);
+
+        for (Properties property : propertiesList) {
+            if (zipCodeString.equals(property.zipCode())) {
+                numerator += property.marketValue();
+                denominator++;
+            }
+        }
+        if (denominator == 0) {
+            int result = 0;
+            return result;
+        }
+        int result = (int) (numerator / denominator);
+        return result;
+    }
+
+    /**
+     * Calculates the average livable area of a given zipCode
+     * @param zipCode
+     * @return
+     */
+    public static int calculateAverageLivableArea(int zipCode) {
+
+        double numerator = 0.0;
+        int denominator = 0;
+        String zipCodeString = String.valueOf(zipCode);
+
+        for (Properties property : propertiesList) {
+            if (zipCodeString.equals(property.zipCode())) {
+                numerator += property.livableArea();
+                denominator++;
+            }
+        }
+        if (denominator == 0) {
+            int result = 0;
+            return result;
+        }
+        int result = (int) (numerator / denominator);
+        return result;
+    }
+
+    /**
+     * Calculates the market value per capita using a zipCode
+     * @param zipCode
+     * @return
+     */
+    public static int calculateMarketValuePerCapita(int zipCode) {
+
+        int population = fetchPopulationsUsingZipCode(zipCode);
+        if (population == 0) {
+            int result = 0;
+            return result;
+        }
+
+        double totalMarketValue =
+                getTotalMarketValueForZip(String.valueOf(zipCode));
+        if (totalMarketValue == 0.0) {
+            int result = 0;
+            return result;
+        }
+
+        int result = (int) (totalMarketValue / population);
+        return result;
+    }
+
+    /**
+     * Relates deaths to property values by calculating death percentages first and then giving by market values
+     * @param zipCode
+     * @return
+     */
+    public static int calculateDeathToPropertyValueRatio(int zipCode) {
+
+        int population = fetchPopulationsUsingZipCode(zipCode);
+        if (population == 0) {
+            int result = 0;
+            return result;
+        }
+
+        double deathCount = 0.0;
+        for (CovidData row : covidData) {
+            if (String.valueOf(zipCode).equals(row.zipCode())) {
+                deathCount = row.deathsCount();
+                break;
+            }
+        }
+        if (deathCount == 0.0) {
+            int result = 0;
+            return result;
+        }
+
+        double deathRate = deathCount / population;
+        int averageMarketValue = calculateAverageMarketValue(zipCode);
+        if (averageMarketValue == 0) {
+            int result = 0;
+            return result;
+        }
+
+        int result = (int) (deathRate / averageMarketValue);
+        return result;
+    }
+
+    /**
+     * Additional Method that retrieves the vaccination-Value ratio of a given zipCode
+     * @param zipCode
+     * @param date
+     * @return
+     */
+    public static int getVaccinationValueRatio(int zipCode, String date) {
+
+        if (VaccinationMarketValueByZipCode.containsKey(zipCode)) {
+            int result = VaccinationMarketValueByZipCode.get(zipCode);
+            return result;
+        }
+
+        int ratio = computeVaccinationValueRatio(zipCode, date);
+        VaccinationMarketValueByZipCode.put(zipCode, ratio);
+        int result = ratio;
+        return result;
+    }
+
+    /**
+     * Gets the population count using a zipCode
+     * @param zipCode
+     * @return
+     */
+    public static int fetchPopulationsUsingZipCode(int zipCode) {
+        for (Population person : populationList) {
+            if (person.getZipCode() == zipCode) {
+                int result = person.getPopulation();
+                return result;
+            }
+        }
+        int result = 0;
+        return result;
+    }
+
+    /**
+     * Uses a zipCode to get the total market value or properties in that area.
+     * @param zipCode
+     * @return
+     */
+    private static double getTotalMarketValueForZip(String zipCode) {
+        double totalMarketValue = 0.0;
+        for (Properties property : propertiesList) {
+            if (zipCode.equals(property.zipCode())) {
+                totalMarketValue += property.marketValue();
+            }
+        }
+        double result = totalMarketValue;
+        return result;
+    }
+
+    /**
+     * Calculates the vaccination count primarily using a flag that determins what level of vaddination we want.
+     * @param zipCode
+     * @param date
+     * @param vaccinationStatus
+     * @return
+     */
+    private static double getVaccinationCountForZipDate(String zipCode, String date, Boolean vaccinationStatus) {
 
         double total = 0.0;
-        if (covidDataList == null) {
-            return 0.0;
-        }
-        for (CovidData row : covidDataList) {
+        for (CovidData row : covidData) {
             if (zipCode.equals(row.zipCode()) &&
                     row.timeStamp().startsWith(date)) {
 
-                if (levelOfVaccination == null) {
+                if (vaccinationStatus == null) {
                     total += row.partialVaxCount() + row.fullyVaxCount();
-                } else if (levelOfVaccination == true) {
+                } else if (vaccinationStatus == true) {
                     total += row.fullyVaxCount();
                 } else {
                     total += row.partialVaxCount();
                 }
             }
         }
-        return total;
+        double result = total; // double check we are still using doubles
+        return result;
     }
-//
 
+    /**
+     * Additional private method that calculates and lazily populates the map of vaccination-Value ratios
+     * @param zipCode
+     * @param date
+     * @return
+     */
+    private static int computeVaccinationValueRatio(int zipCode, String date) {
+
+        int averageMarketValue = calculateAverageMarketValue(zipCode);
+        if (averageMarketValue == 0) {
+            int result = 0;
+            return result;
+        }
+
+        int population = fetchPopulationsUsingZipCode(zipCode);
+        if (population == 0) {
+            int result = 0;
+            return result;
+        }
+
+        double vaccinated =
+                getVaccinationCountForZipDate(String.valueOf(zipCode),
+                        date,
+                        null);
+        if (vaccinated == 0.0) {
+            int result = 0;
+            return result;
+        }
+
+        double vaccinationPercentage = (vaccinated / population) * 100.0;
+        int result = (int) (averageMarketValue / vaccinationPercentage);
+        return result;
+    }
+
+    /**
+     * Gets the count of the properties by ZipCode
+     * Note: didn't end up using this and just brought the logic/inspo up when needed.
+     * @param zipCode
+     * @return
+     */
+    private static int getPropertyCountByZip(int zipCode) {
+
+        if (propertiesList == null || propertiesList.isEmpty()) {
+            int result = 0;
+            return result;
+        }
+
+        int propertyCounter = 0;
+        String zipCodeString = String.valueOf(zipCode);
+
+        for (Properties property : propertiesList) {
+            if (zipCodeString.equals(property.zipCode())) {
+                propertyCounter++;
+            }
+        }
+        int result = propertyCounter;
+        return result;
+    }
 }
-
