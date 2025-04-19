@@ -15,8 +15,6 @@ public class Processor {
 
     //need to add the lists to store and manipulate this information later
     private List<CovidData> covidData;
-    //HW: hesitating about whether this should be static, as I was getting warnings on fetchPopulationsUsingZipCode
-    // method for using instance vs. static
     private static List<Population> populationList;
     private List<Properties> propertiesList;
     private Map<Integer, Integer> VaccinationMarketValueByZipCode = new HashMap<>();
@@ -44,8 +42,8 @@ public class Processor {
     public static int calculateTotalPopulation(int population, int zipCode) {
         int totalPopulation = 0;
         for (Population instance : populationList) {
-            double newPopulationToAdd = instance.getPopulation(); // Need to check the getPopulations field.
-            totalPopulation += newPopulationToAdd;
+            if (instance.getZipCode() == zipCode) // Need to check the getPopulations field.
+            totalPopulation += instance.getPopulation();
         }
         return totalPopulation;
     }
@@ -267,12 +265,12 @@ public class Processor {
     public static int getVaccinationValueRatio(int zipCode, String date, List<Properties> propertiesList, List<CovidData> covidDataList) {
 
         // This is our memoization strategy at work where we check if the list has the ratio, if it doesn't, we create it.
-        if (vaxValueRatioByZip.containsKey(zipCode)) {
-            return vaxValueRatioByZip.get(zipCode);
+        if (VaccinationMarketValueByZipCode.containsKey(zipCode)) {
+            return VaccinationMarketValueByZipCode.get(zipCode);
         } else {
 
             int ratio = computeVaccinationValueRatio(zipCode, date, propertiesList, covidDataList);
-            vaxValueRatioByZip.put(zipCode, ratio);
+            VaccinationMarketValueByZipCode.put(zipCode, ratio);
             return ratio;
         }
     }
