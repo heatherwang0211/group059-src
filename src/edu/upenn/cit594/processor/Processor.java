@@ -5,7 +5,10 @@ import edu.upenn.cit594.util.CovidData;
 import edu.upenn.cit594.util.Population;
 import edu.upenn.cit594.util.Properties;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Processor {
     private Logger logger;
@@ -59,7 +62,7 @@ public class Processor {
      * HW: i removed partial and full to just have 1 vaccination input, bc it is a choice made by the user
      * ZH Response: noted - even if the user selects, I kept the helper method generic and passed a null so we can use it as is.
      */
-    public static int calculateVaccinationsPerCapita(int vaccination, int zipCode, String timeStamp) {
+    public static int calculateVaccinationsPerCapita(int vaccination, int zipCode, String timeStamp, List<CovidData> covidDataList) {
         int population = fetchPopulationsUsingZipCode(zipCode);
         if (population == 0) {
             return 0;
@@ -68,7 +71,7 @@ public class Processor {
         double totalVaccines = getVaccinationCountForZipDate(
                 String.valueOf(zipCode),
                 timeStamp,
-                null); // pass null to get all vaccinations
+                null, covidDataList); // pass null to get all vaccinations
 
         return (int) (totalVaccines / population);
     }
@@ -78,7 +81,7 @@ public class Processor {
      * @param zipCode
      * @return
      */
-    public static int calculateAverageMarketValue(int marketValue, int zipCode) {
+    public static int calculateAverageMarketValue(int marketValue, int zipCode,List<Properties> propertiesList) {
         // use the two inputs and count number of entries for properties to use as average
         // ZH: Sounds good - based on that, i came up with the logic below:
         if (propertiesList == null) {
@@ -87,9 +90,10 @@ public class Processor {
 
         int propertyCount = 0;
         String zipCodeString = String.valueOf(zipCode);
+        int zipCodeInt = Integer.parseInt(zipCodeString);
 
         for (Properties property : propertiesList) {
-            if (zipStr.equals(property.zipCode())) {
+            if (zipCodeInt == property.zipCode()) {
                 propertyCount++;
             }
         }
@@ -107,7 +111,7 @@ public class Processor {
      * @param zipCode
      * @return
      */
-    public static int calculateAverageLivableArea(int livableArea, int zipCode) {
+    public static int calculateAverageLivableArea(int livableArea, int zipCode, List<Properties> propertiesList) {
         // use the two inputs and count number of entries for properties to use as average
         // ZH: Sounds good - based on that, i came up with the logic below:
 
@@ -117,9 +121,10 @@ public class Processor {
 
         int propertyCount = 0;
         String zipCodeString = String.valueOf(zipCode);
+        int zipCodeInt = Integer.parseInt(zipCodeString);
 
         for (Properties property : propertiesList) {
-            if (zipStr.equals(property.zipCode())) {
+            if (zipCodeInt == property.zipCode()) {
                 propertyCount++;
             }
         }
@@ -138,7 +143,7 @@ public class Processor {
      * @param zipCode
      * @return
      */
-    public static int calculateMarketValuePerCapita(int population, int marketValue, int zipCode) {
+    public static int calculateMarketValuePerCapita(int population, int marketValue, int zipCode, List<Properties> propertiesList) {
         if (population == 0 || propertiesList == null) {
             return 0;
         }
@@ -170,7 +175,7 @@ public class Processor {
      *
      * @return death to income ratio
      */
-    public static int calculateDeathToPropertyValueRatio(int population, int deathCount, int zipCode, int propertyValue) {
+    public static int calculateDeathToPropertyValueRatio(int population, int deathCount, int zipCode, int propertyValue, List<Properties> propertiesList) {
         if (population == 0 || propertiesList == null) {
             return 0;
         }
@@ -208,7 +213,7 @@ public class Processor {
 
         for (Population person : populationList) {
             if (person.getZipCode() == zipCode) {
-                return person.getPopulation();
+                return (int) person.getPopulation();
             }
         }
         return 0;
@@ -227,7 +232,7 @@ public class Processor {
         }
         for (Properties property : propertiesList) {
             if (zipCode.equals(property.zipCode())) {
-                listOfProperties.add(prop);
+                listOfProperties.add(property);
             }
         }
         return listOfProperties;
@@ -259,14 +264,14 @@ public class Processor {
      * @param date
      * @return
      */
-    public int getVaccinationValueRatio(int zipCode, String date) {
+    public static int getVaccinationValueRatio(int zipCode, String date, List<Properties> propertiesList, List<CovidData> covidDataList) {
 
         // This is our memoization strategy at work where we check if the list has the ratio, if it doesn't, we create it.
         if (vaxValueRatioByZip.containsKey(zipCode)) {
             return vaxValueRatioByZip.get(zipCode);
         } else {
 
-            int ratio = computeVaccinationValueRatio(zipCode, date);
+            int ratio = computeVaccinationValueRatio(zipCode, date, propertiesList, covidDataList);
             vaxValueRatioByZip.put(zipCode, ratio);
             return ratio;
         }
@@ -279,7 +284,7 @@ public class Processor {
      * @param date
      * @return
      */
-    private int computeVaccinationValueRatio(int zipCode, String date) {
+    private static int computeVaccinationValueRatio(int zipCode, String date, List<Properties> propertiesList, List<CovidData> covidDataList) {
 
         String zipCodeString = String.valueOf(zipCode);
 
@@ -290,7 +295,7 @@ public class Processor {
         double totalMarketValue = 0.0;
         int propertyCount = 0;
         for (Properties property : propertiesList) {
-            if (stringZipCode.equals(property.zipCode())) {
+            if (zipCodeString.equals(property.zipCode())) {
                 totalMarketValue += property.marketValue();
                 propertyCount++;
             }
@@ -302,13 +307,13 @@ public class Processor {
         }
 
         double averageMarketValue = totalMarketValue / propertyCount;
-
-        int population = getPopulationsUsingZipCode(zipCode);
+        Population pop = new Population(zipCode, 0);
+        int population = (int)pop.getPopulation();
         // avoid divide by zero for the population portion
         if (population == 0) {
             return 0;
         }
-        double vaccinated = getVaccinationCountForZipDate(zipCodeString, date, null);
+        double vaccinated = getVaccinationCountForZipDate(zipCodeString, date, null,  covidDataList);
         double vaccinationPercentage = (vaccinated / population) * 100.0;
         if (vaccinationPercentage == 0.0) {
             return 0;
@@ -327,14 +332,16 @@ public class Processor {
      * @param levelOfVaccination
      * @return
      */
-    private double getVaccinationCountForZipDate(String zipCode,
-                                                 String date,
-                                                 Boolean levelOfVaccination) {
+    private static double getVaccinationCountForZipDate(String zipCode,
+                                                        String date,
+                                                        Boolean levelOfVaccination,
+                                                        List<CovidData> covidDataList) {
+
         double total = 0.0;
-        if (covidData == null) {
+        if (covidDataList == null) {
             return 0.0;
         }
-        for (CovidData row : covidData) {
+        for (CovidData row : covidDataList) {
             if (zipCode.equals(row.zipCode()) &&
                     row.timeStamp().startsWith(date)) {
 

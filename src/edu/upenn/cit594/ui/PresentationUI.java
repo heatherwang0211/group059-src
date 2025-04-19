@@ -142,7 +142,7 @@ public class PresentationUI {
 
                 case "7":
                     System.out.println("BEGIN OUTPUT");
-                    double correlation = Processor.calculateVaccinationPropertyValueCorrelation();
+                    double correlation = Processor.getVaccinationValueRatio();
                     System.out.println(correlation);
                     System.out.println("END OUTPUT");
                     break;
