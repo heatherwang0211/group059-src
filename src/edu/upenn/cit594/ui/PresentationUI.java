@@ -1,10 +1,22 @@
 package edu.upenn.cit594.ui;
 
 import edu.upenn.cit594.processor.Processor;
+import edu.upenn.cit594.util.CovidData;
+import edu.upenn.cit594.util.Population;
+
 import java.util.*;
 
 public class PresentationUI {
     private Scanner scanner;
+    private List<Population> populationList;
+    private List<CovidData> covidDataList;
+    private List<Properties> propertiesList;
+
+    public PresentationUI(List<Population> populationList, List<CovidData> covidDataList, List<Properties> propertiesList) {
+        this.populationList = populationList;
+        this.covidDataList = covidDataList;
+        this.propertiesList = propertiesList;
+    }
 
     public PresentationUI() {
         scanner = new Scanner(System.in);
@@ -75,7 +87,8 @@ public class PresentationUI {
                 case "2":
                     // it should just display total population for ALL the zip codes together
                     System.out.println("BEGIN OUTPUT");
-                    int totalPopulation = Processor.calculateTotalPopulation(population, zipCode);
+                    int zipCode2 = promptForZipCode();
+                    int totalPopulation = Processor.calculateTotalPopulation(populationList, zipCode2);
                     System.out.println(totalPopulation);
                     System.out.println("END OUTPUT");
                     break;
@@ -105,7 +118,8 @@ public class PresentationUI {
                     }
 
                     System.out.println("BEGIN OUTPUT");
-                    int vacPerCapita = Processor.calculateVaccinationsPerCapita(vaccination, zipCode, timeStamp);
+                    int zipCode3 = promptForZipCode();
+                    int vacPerCapita = processor.calculateVaccinationsPerCapita(vaccination, zipCode3, timeStamp, covidDataList);
                     System.out.println(vacPerCapita);
                     System.out.println("END OUTPUT");
                     break;
@@ -135,14 +149,15 @@ public class PresentationUI {
                     int zipCodeMarketValPerCap = promptForZipCode();
                     // result is truncated to an int
                     System.out.println("BEGIN OUTPUT");
-                    int marketValuePerCap = (int) Processor.calculateMarketValuePerCapita(population, marketValue, zipCodeMarketValPerCap);
+                    int marketValuePerCap = (int) Processor.calculateMarketValuePerCapita(populationList, marketValue, zipCodeMarketValPerCap);
                     System.out.println(marketValuePerCap);
                     System.out.println("END OUTPUT");
                     break;
 
                 case "7":
                     System.out.println("BEGIN OUTPUT");
-                    double correlation = Processor.getVaccinationValueRatio();
+                    int zipCode7 = promptForZipCode();
+                    double correlation = Processor.getVaccinationValueRatio(populationList, deathCount, zipCode7 , propertyValue, propertiesList);
                     System.out.println(correlation);
                     System.out.println("END OUTPUT");
                     break;
