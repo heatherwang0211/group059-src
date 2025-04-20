@@ -88,23 +88,29 @@ public class PresentationUI {
                     // it should just display total population for ALL the zip codes together
                     System.out.println("BEGIN OUTPUT");
                     int zipCode2 = promptForZipCode();
-                    int totalPopulation = Processor.calculateTotalPopulation(populationList, zipCode2);
+                    int totalPopulation = Processor.calculateTotalPopulation();
                     System.out.println(totalPopulation);
                     System.out.println("END OUTPUT");
                     break;
 
                 case "3":
                     //prompt user to input "partial" or "full", then input a YYYY-MM-DD date
-                    System.out.println("Please enter vaccination type ('partial' or 'full'):");
-                    System.out.flush();
-                    String vaccinationType = scanner.nextLine().trim().toLowerCase();
-
-                    // validate vaccination type input
-                    while (!vaccinationType.equals("partial") && !vaccinationType.equals("full")) {
-                        System.out.println("Invalid input. Please enter exactly either 'partial' or 'full':");
-                        System.out.flush();
-                        vaccinationType = scanner.nextLine().trim().toLowerCase();
+                    Boolean vaccinationType = null;
+                    while (vaccinationType == null) {
+                        System.out.print("Enter vaccination type: 'full' or 'partial'. ");
+                        String vaccinationInput = scanner.nextLine().trim().toLowerCase();
+                        // check what the input was
+                        if (vaccinationInput.equals("full")) {
+                            vaccinationType = true;
+                        } else if (vaccinationInput.equals("partial")) {
+                            vaccinationType = false;
+                        } else {
+                            System.out.println("Invalid input. Please enter 'full' or 'partial'.");
+                        }
                     }
+
+                    System.out.println("You entered: " + vaccinationType);
+
                     System.out.println("Thank you. You have requested for: " + vaccinationType + " data.");
                     System.out.println("Please enter date in format YYYY-MM-DD:");
                     System.out.flush();
@@ -119,7 +125,7 @@ public class PresentationUI {
 
                     System.out.println("BEGIN OUTPUT");
                     int zipCode3 = promptForZipCode();
-                    int vacPerCapita = processor.calculateVaccinationsPerCapita(vaccination, zipCode3, timeStamp, covidDataList);
+                    int vacPerCapita = (int) Processor.calculateVaccinationsPerCapita(zipCode3, dateInput, vaccinationType);
                     System.out.println(vacPerCapita);
                     System.out.println("END OUTPUT");
                     break;
@@ -129,7 +135,7 @@ public class PresentationUI {
                     int zipCodeAvgMarketVal = promptForZipCode();
                     // result is truncated to an int, call processor method
                     System.out.println("BEGIN OUTPUT");
-                    int averageMarketValue = (int) Processor.calculateAverageMarketValue(marketValue, zipCodeAvgMarketVal);
+                    int averageMarketValue = (int) Processor.calculateAverageMarketValue(zipCodeAvgMarketVal);
                     System.out.println(averageMarketValue);
                     System.out.println("END OUTPUT");
                     break;
@@ -139,7 +145,7 @@ public class PresentationUI {
                     int zipCodeLivableArea = promptForZipCode();
                     // result is truncated to an int, call processor method
                     System.out.println("BEGIN OUTPUT");
-                    int averageLivableArea = (int) Processor.calculateAverageLivableArea(livableArea, zipCodeLivableArea);
+                    int averageLivableArea = (int) Processor.calculateAverageLivableArea(zipCodeLivableArea);
                     System.out.println(averageLivableArea);
                     System.out.println("END OUTPUT");
                     break;
@@ -149,7 +155,7 @@ public class PresentationUI {
                     int zipCodeMarketValPerCap = promptForZipCode();
                     // result is truncated to an int
                     System.out.println("BEGIN OUTPUT");
-                    int marketValuePerCap = (int) Processor.calculateMarketValuePerCapita(populationList, marketValue, zipCodeMarketValPerCap);
+                    int marketValuePerCap = (int) Processor.calculateMarketValuePerCapita(zipCodeMarketValPerCap);
                     System.out.println(marketValuePerCap);
                     System.out.println("END OUTPUT");
                     break;
@@ -157,7 +163,18 @@ public class PresentationUI {
                 case "7":
                     System.out.println("BEGIN OUTPUT");
                     int zipCode7 = promptForZipCode();
-                    double correlation = Processor.getVaccinationValueRatio(populationList, deathCount, zipCode7 , propertyValue, propertiesList);
+                    // ask for date input
+                    System.out.println("Please enter date in format YYYY-MM-DD:");
+                    System.out.flush();
+                    String dateInputCase7 = scanner.nextLine().trim();
+
+                    // validate date format
+                    while (!isValidDateFormat(dateInputCase7)) {
+                        System.out.println("Invalid date format. Please enter date in format YYYY-MM-DD:");
+                        System.out.flush();
+                        dateInputCase7 = scanner.nextLine().trim();
+                    }
+                    double correlation = Processor.getVaccinationValueRatio(zipCode7 , dateInputCase7);
                     System.out.println(correlation);
                     System.out.println("END OUTPUT");
                     break;

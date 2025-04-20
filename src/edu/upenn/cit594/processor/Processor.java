@@ -197,7 +197,7 @@ public class Processor {
     public static int fetchPopulationsUsingZipCode(int zipCode) {
         for (Population person : populationList) {
             if (person.getZipCode() == zipCode) {
-                int result = person.getPopulation();
+                int result = (int) person.getPopulation();
                 return result;
             }
         }
