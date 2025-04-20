@@ -1,32 +1,50 @@
 package edu.upenn.cit594.processor;
 
 import edu.upenn.cit594.util.Properties;
+
+import javax.xml.crypto.Data;
 import java.util.List; //
 
 public class AvgMarketValueCalculation implements strategyAverageCalculator {
+
+    private List<Properties> propertiesList;
+
+    /**
+     * This computes the average market value for a given set of properties ingested (and cleaned) in the reader files
+     * @param propertiesList
+     */
+    public AvgMarketValueCalculation(List<Properties> propertiesList) {
+        this.propertiesList = propertiesList;
+    }
+
+   /* @Override
+    public double crunchNumbers(int zipCode) {
+        return 0;
+    }*/
+
     @Override
-    public int calculate(List<Properties> propertiesList, int zipCode, String calculationType) {
+    public int calculate(List<Properties> propertiesList, int zipCode, String columnName) {
 
-        if (propertiesList == null || propertiesList.isEmpty() || calculationType == null || !calculationType.equals("marketValue")) {
-
+        if (propertiesList == null || propertiesList.isEmpty()) {
             return 0;
         }
 
-        double numerator = 0.0;
-        int count = 0;
-        String  zipCodeString = String.valueOf(zipCode);
+        double numerator   = 0.0;
+        int    denominator = 0;
+        String zipCodeString = columnName;
 
         for (Properties property : propertiesList) {
+            //Properties property = (Properties) generic;
             if (zipCodeString.equals(property.zipCode())) {
-                numerator += property.marketValue();
-                count++;
+                numerator   += property.marketValue();
+                denominator++;
             }
         }
 
-        if (count == 0) {
+        if (denominator == 0) {
             return 0;
         }
-        int finalResult = (int) (numerator / count);
-        return finalResult;
+
+        return (int) numerator / denominator;
     }
 }

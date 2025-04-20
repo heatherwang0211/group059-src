@@ -35,7 +35,12 @@ public abstract class PropertiesCsvReader {
 
                 //market value
                 String marketValueCell = rows[1];  // grab the right cell for timezone and store it
-                double marketValue = Double.parseDouble(marketValueCell.trim());
+                double marketValue = 0.0;
+                if (marketValueCell.trim().isEmpty()) {
+                    marketValue = 0.0;
+                }
+                else { marketValue = Double.parseDouble(marketValueCell.trim());}
+
 
                 String zipCodeCell = rows[2];
                 String zipCode = zipCodeCell.trim();

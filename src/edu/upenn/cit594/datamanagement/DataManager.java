@@ -1,3 +1,4 @@
+/**
 package edu.upenn.cit594.datamanagement;
 
 import edu.upenn.cit594.util.CovidData;
@@ -21,6 +22,7 @@ public class DataManager {
      * @param fileName
      * @return
      */
+/**
     //****** I JUST COPY PASTED FROM My solo assignment for now, didnt take a suepr close look yet
     // putting it here for reference for json
     public List<CovidData> loadCovidDataJson(String fileName) {
@@ -67,6 +69,7 @@ public class DataManager {
      * @param fileName
      * @return
      */
+/**
     public List<CovidData> loadCovidDataCsv(String fileName) {
         List<CovidData> covidData = new ArrayList<>();
         return null;
@@ -77,6 +80,7 @@ public class DataManager {
      * @param fileName
      * @return
      */
+/**
     public List<Properties> loadPropertiesDataCsv(String fileName) {
         List<Properties> properties = new ArrayList<>();
         return null;
@@ -87,9 +91,11 @@ public class DataManager {
      * @param fileName
      * @return
      */
+/**
     // DO WE NEED A POPULATION CLASS? .... NOT SURE .. LMK
     public List<Population> loadPopulationsDataCsv(String fileName) {
         List<Population> population = new ArrayList<>();
         return population;
     }
 }
+ */

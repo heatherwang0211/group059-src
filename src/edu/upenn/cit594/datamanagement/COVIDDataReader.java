@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface COVIDDataReader {
 
-    List<CovidData> readData(String filename); // we might want to make this an ArrayList since we are only adding to the back
+    //List<CovidData> readData(String filename); // we might want to make this an ArrayList since we are only adding to the back
 
     List<CovidData> CovidReader(String fileName);
 }

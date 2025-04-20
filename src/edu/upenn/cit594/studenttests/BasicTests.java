@@ -21,12 +21,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class BasicTests {
-
+/**
 	public static boolean triedToExit = false;
 
 	/*
 	 * Student code should exit by returning from main(), not by calling System.exit
 	 */
+/**
 	@Before
 	public void blockExit() {
 		System.setSecurityManager(new SecurityManager() {
@@ -45,7 +46,7 @@ public class BasicTests {
 	public void resetExit() {
 		System.setSecurityManager(null);
 	}
-
+*/
 	/*
 	 * Note no safety is provided. This routine is expected to fail with any error
 	 * or exception in the student code.

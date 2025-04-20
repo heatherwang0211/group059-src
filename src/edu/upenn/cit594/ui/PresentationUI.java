@@ -32,15 +32,17 @@ public class PresentationUI {
         // as long as user chooses to continue the main menu will be displayed
         while (running) {
             displayMainMenu();
+            String input = scanner.nextLine().trim();
 
             try {
                 // get the input and check whether it is valid
-                String input = scanner.nextLine().trim();
                 if (input.equals("0")) {
                     System.out.println("Exited program. Goodbye!");
                     running = false;
                 } else if (input.equals("1")) {
+                    System.out.println("Proceeding to actions menu.");
                     handleActionsMenu();
+                    break;
                 }
                 // if not valid option, then prompt to re-input
                 else {
@@ -65,132 +67,133 @@ public class PresentationUI {
         // go to display if valid
         while (isValidAction) {
             displayActions();
-        }
 
-        // try to get the input and clear
-        try {
-            String input = scanner.nextLine().trim();
+            // try to get the input and clear
+            try {
+                String input = scanner.nextLine().trim();
+                // switch between all 8 cases based on input
+                // do the calculations using the methods from processor
+                switch (input) {
+                    case "0":
+                        System.out.println("returning to main menu.");
+                        // not valid then exit
+                        isValidAction = false;
+                        break;
 
-            // switch between all 8 cases based on input
-            // do the calculations using the methods from processor
-            switch (input) {
-                case "0":
-                    System.out.println("Exited program. Goodbye!");
-                    // not valid then exit
-                    isValidAction = false;
-                    break;
+                    case "1":
+                        System.out.println("Not a valid action at this point.");
+                        // not valid then exit
+                        isValidAction = false;
+                        break;
 
-                case "1":
-                    displayActions();
-                    break;
+                    case "2":
+                        // it should just display total population for ALL the zip codes together
+                        System.out.println("BEGIN OUTPUT");
+                        int totalPopulation = Processor.calculateTotalPopulation();
+                        System.out.println(totalPopulation);
+                        System.out.println("END OUTPUT");
+                        break;
 
-                case "2":
-                    // it should just display total population for ALL the zip codes together
-                    System.out.println("BEGIN OUTPUT");
-                    int zipCode2 = promptForZipCode();
-                    int totalPopulation = Processor.calculateTotalPopulation();
-                    System.out.println(totalPopulation);
-                    System.out.println("END OUTPUT");
-                    break;
+                    case "3":
+                        //prompt user to input "partial" or "full", then input a YYYY-MM-DD date
+                        Boolean vaccinationType = null;
+                        String vaccinationInput = null;
+                        while (vaccinationType == null) {
+                            System.out.print("Enter vaccination type: 'full' or 'partial'. ");
+                            vaccinationInput = scanner.nextLine().trim().toLowerCase();
+                            // check what the input was
+                            if (vaccinationInput.equals("full")) {
+                                vaccinationType = true;
 
-                case "3":
-                    //prompt user to input "partial" or "full", then input a YYYY-MM-DD date
-                    Boolean vaccinationType = null;
-                    while (vaccinationType == null) {
-                        System.out.print("Enter vaccination type: 'full' or 'partial'. ");
-                        String vaccinationInput = scanner.nextLine().trim().toLowerCase();
-                        // check what the input was
-                        if (vaccinationInput.equals("full")) {
-                            vaccinationType = true;
-                        } else if (vaccinationInput.equals("partial")) {
-                            vaccinationType = false;
-                        } else {
-                            System.out.println("Invalid input. Please enter 'full' or 'partial'.");
+                            } else if (vaccinationInput.equals("partial")) {
+                                vaccinationType = false;
+
+                            } else {
+                                System.out.println("Invalid input. Please enter 'full' or 'partial'.");
+                            }
                         }
-                    }
 
-                    System.out.println("You entered: " + vaccinationType);
-
-                    System.out.println("Thank you. You have requested for: " + vaccinationType + " data.");
-                    System.out.println("Please enter date in format YYYY-MM-DD:");
-                    System.out.flush();
-                    String dateInput = scanner.nextLine().trim();
-
-                    // validate date format
-                    while (!isValidDateFormat(dateInput)) {
-                        System.out.println("Invalid date format. Please enter date in format YYYY-MM-DD:");
+                        System.out.println("Thank you. You have requested for: " + vaccinationInput + " data.");
+                        System.out.println("Please enter date in format YYYY-MM-DD:");
                         System.out.flush();
-                        dateInput = scanner.nextLine().trim();
-                    }
+                        String dateInput = scanner.nextLine().trim();
 
-                    System.out.println("BEGIN OUTPUT");
-                    int zipCode3 = promptForZipCode();
-                    int vacPerCapita = (int) Processor.calculateVaccinationsPerCapita(zipCode3, dateInput, vaccinationType);
-                    System.out.println(vacPerCapita);
-                    System.out.println("END OUTPUT");
-                    break;
+                        // validate date format
+                        while (!isValidDateFormat(dateInput)) {
+                            System.out.println("Invalid date format. Please enter date in format YYYY-MM-DD:");
+                            System.out.flush();
+                            dateInput = scanner.nextLine().trim();
+                        }
 
-                case "4":
-                    //prompt user to enter 5 digit zip code
-                    int zipCodeAvgMarketVal = promptForZipCode();
-                    // result is truncated to an int, call processor method
-                    System.out.println("BEGIN OUTPUT");
-                    int averageMarketValue = (int) Processor.calculateAverageMarketValue(zipCodeAvgMarketVal);
-                    System.out.println(averageMarketValue);
-                    System.out.println("END OUTPUT");
-                    break;
+                        System.out.println("BEGIN OUTPUT");
+                        int zipCode3 = promptForZipCode();
+                        int vacPerCapita = (int) Processor.calculateVaccinationsPerCapita(zipCode3, dateInput, vaccinationType);
+                        System.out.println(vacPerCapita);
+                        System.out.println("END OUTPUT");
+                        break;
 
-                case "5":
-                    //prompt user to enter 5 digit zip code
-                    int zipCodeLivableArea = promptForZipCode();
-                    // result is truncated to an int, call processor method
-                    System.out.println("BEGIN OUTPUT");
-                    int averageLivableArea = (int) Processor.calculateAverageLivableArea(zipCodeLivableArea);
-                    System.out.println(averageLivableArea);
-                    System.out.println("END OUTPUT");
-                    break;
+                    case "4":
+                        //prompt user to enter 5 digit zip code
+                        int zipCodeAvgMarketVal = promptForZipCode();
+                        // result is truncated to an int, call processor method
+                        System.out.println("BEGIN OUTPUT");
+                        int averageMarketValue = (int) Processor.calculateAverageMarketValue(zipCodeAvgMarketVal);
+                        System.out.println(averageMarketValue);
+                        System.out.println("END OUTPUT");
+                        break;
 
-                case "6":
-                    //prompt user to enter 5 digit zip code
-                    int zipCodeMarketValPerCap = promptForZipCode();
-                    // result is truncated to an int
-                    System.out.println("BEGIN OUTPUT");
-                    int marketValuePerCap = (int) Processor.calculateMarketValuePerCapita(zipCodeMarketValPerCap);
-                    System.out.println(marketValuePerCap);
-                    System.out.println("END OUTPUT");
-                    break;
+                    case "5":
+                        //prompt user to enter 5 digit zip code
+                        int zipCodeLivableArea = promptForZipCode();
+                        // result is truncated to an int, call processor method
+                        System.out.println("BEGIN OUTPUT");
+                        int averageLivableArea = (int) Processor.calculateAverageLivableArea(zipCodeLivableArea);
+                        System.out.println(averageLivableArea);
+                        System.out.println("END OUTPUT");
+                        break;
 
-                case "7":
-                    System.out.println("BEGIN OUTPUT");
-                    int zipCode7 = promptForZipCode();
-                    // ask for date input
-                    System.out.println("Please enter date in format YYYY-MM-DD:");
-                    System.out.flush();
-                    String dateInputCase7 = scanner.nextLine().trim();
+                    case "6":
+                        //prompt user to enter 5 digit zip code
+                        int zipCodeMarketValPerCap = promptForZipCode();
+                        // result is truncated to an int
+                        System.out.println("BEGIN OUTPUT");
+                        int marketValuePerCap = (int) Processor.calculateMarketValuePerCapita(zipCodeMarketValPerCap);
+                        System.out.println(marketValuePerCap);
+                        System.out.println("END OUTPUT");
+                        break;
 
-                    // validate date format
-                    while (!isValidDateFormat(dateInputCase7)) {
-                        System.out.println("Invalid date format. Please enter date in format YYYY-MM-DD:");
+                    case "7":
+                        System.out.println("BEGIN OUTPUT");
+                        int zipCode7 = promptForZipCode();
+                        // ask for date input
+                        System.out.println("Please enter date in format YYYY-MM-DD:");
                         System.out.flush();
-                        dateInputCase7 = scanner.nextLine().trim();
-                    }
-                    double correlation = Processor.getVaccinationValueRatio(zipCode7 , dateInputCase7);
-                    System.out.println(correlation);
-                    System.out.println("END OUTPUT");
-                    break;
+                        String dateInputCase7 = scanner.nextLine().trim();
 
-                // case where user inputs something invalid
-                default:
-                    System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
-                    System.out.flush();
-                    break;
+                        // validate date format
+                        while (!isValidDateFormat(dateInputCase7)) {
+                            System.out.println("Invalid date format. Please enter date in format YYYY-MM-DD:");
+                            System.out.flush();
+                            dateInputCase7 = scanner.nextLine().trim();
+                        }
+                        double correlation = Processor.getVaccinationValueRatio(zipCode7, dateInputCase7);
+                        System.out.println(correlation);
+                        System.out.println("END OUTPUT");
+                        break;
+
+                    // case where user inputs something invalid
+                    default:
+                        System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
+                        System.out.flush();
+                        break;
+                }
             }
-        }
-        // catch exceptions and display
-        catch (Exception e) {
-            System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
-            System.out.flush();
-            scanner.nextLine();
+            // catch exceptions and display
+            catch (Exception e) {
+                System.out.println("Invalid input. Please try again with a valid integer between 0 and 7.");
+                System.out.flush();
+                scanner.nextLine();
+            }
         }
     }
 

@@ -36,8 +36,8 @@ public class Main {
         }
 
         // COVID: check covid file extension and load
-        if (!fileNameCOVID.toLowerCase().endsWith(".json") && !fileNameCOVID.toLowerCase().endsWith(".txt")) {
-            System.err.println("Error: tweets file must have a .json or .txt extension.");
+        if (!fileNameCOVID.toLowerCase().endsWith(".json") && !fileNameCOVID.toLowerCase().endsWith(".csv")) {
+            System.err.println("Error: COVID file must have a .json or .csv extension.");
             return;
         }
         List<CovidData> covidData = new ArrayList<>();
@@ -46,7 +46,7 @@ public class Main {
             List<CovidData> jsonCovid = reader.CovidReader(fileNameCOVID);
             covidData.addAll(jsonCovid);
         }
-        if (fileNameCOVID.toLowerCase().endsWith(".txt")) {
+        if (fileNameCOVID.toLowerCase().endsWith(".csv")) {
             COVIDDataReader reader = new CovidCsvReader();
             List<CovidData> txtCovid = reader.CovidReader(fileNameCOVID);
             covidData.addAll(txtCovid);
