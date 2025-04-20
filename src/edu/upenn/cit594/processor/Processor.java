@@ -18,7 +18,7 @@ public class Processor {
     private static List<Properties> propertiesList;
     private static Map<Integer, Integer> VaccinationMarketValueByZipCode = new HashMap<>();
     private static strategyAverageCalculator avgMarketValue = new AvgMarketValueCalculation();
-    private static strategyAverageCalculator avgLivableArea = new AvgLiveableAreaCalculation();
+    private static strategyAverageCalculator avgLivableArea = new AvgLivableAreaCalculation();
 
 
     /**
