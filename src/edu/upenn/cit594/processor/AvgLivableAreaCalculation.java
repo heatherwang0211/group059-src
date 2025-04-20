@@ -3,7 +3,7 @@ package edu.upenn.cit594.processor;
 import edu.upenn.cit594.util.Properties;
 import java.util.List;
 
-public class AvgLiveableAreaCalculation implements strategyAverageCalculator {
+public class AvgLivableAreaCalculation implements strategyAverageCalculator {
     @Override
     public int calculate(List<Properties> propertiesList, int zipCode, String calculationType) {
 
@@ -11,12 +11,12 @@ public class AvgLiveableAreaCalculation implements strategyAverageCalculator {
             return 0;
         }
 
-        double numerator   = 0.0;
+        double numerator = 0.0;
         int denominator = 0;
         String zipcodeString = String.valueOf(zipCode);
 
         for (Properties property : propertiesList) {
-            if (zipCodeString.equals(property.zipCode())) {
+            if (zipcodeString.equals(property.zipCode())) {
                 numerator += property.livableArea();
                 denominator += 1;
             }
